@@ -1,0 +1,4 @@
+#Fri May 22 11:22:38 CST 2020
+base.0=D\:\\Me\\DEAKIN\\SIT305\\Assessment-2-Git\\AndroidDev\\Assessment-2\\app\\build\\intermediates\\dex\\debug\\out\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
