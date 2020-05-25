@@ -52,7 +52,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         //txt_title.setText(R.string.txt_nav_home);
         txt_home.setTextColor(0xff1B940A);
     }
-
+//want to test git hub
     private void initEvent() {
         ll_home.setOnClickListener(this);
         ll_address.setOnClickListener(this);
