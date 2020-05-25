@@ -41,7 +41,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
     // ViewPager适配器ContentAdapter
     private ContentAdapter adapter;
     private List<View> views;
-//测试github检测
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +52,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         //txt_title.setText(R.string.txt_nav_home);
         txt_home.setTextColor(0xff1B940A);
     }
-
+//want to test git hub
+    //测试github监听
     private void initEvent() {
         ll_home.setOnClickListener(this);
         ll_address.setOnClickListener(this);
@@ -60,6 +61,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         ll_setting.setOnClickListener(this);
         viewPager.setOnPageChangeListener(this);
     }
+
     private void initView() {
         txt_title = findViewById(R.id.title);
 
