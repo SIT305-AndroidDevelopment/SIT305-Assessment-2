@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "D:\\Me\\DEAKIN\\SIT305\\Assessment-2-Git\\AndroidDev\\Assessment-2\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-hr\\values-hr.xml",
+            "outputFile": "D:\\Me\\DEAKIN\\SIT305\\BaiduLBS_AndroidSDK_Sample\\BaiduLBS_AndroidSDK_Sample\\BaiduLoc_AndroidSDK_v8.4.4_Demo.zip\\LocationDemo\\baidu\\opensdk-demo\\BaiduMapTest\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-hr\\values-hr.xml",
             "map": [
                 {
                     "source": "C:\\Users\\94804\\.gradle\\caches\\transforms-2\\files-2.1\\34b4ab0d8b65ac74ddd00d45b26dd963\\core-1.1.0\\res\\values-hr\\values-hr.xml",
