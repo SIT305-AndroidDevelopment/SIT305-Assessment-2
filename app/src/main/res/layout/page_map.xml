@@ -1,16 +1,31 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.HomeActivity">
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/txt_friend_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="MapPage"
-        android:textColor="#1B940A"
-        android:textSize="30dp" />
+<!--    <com.baidu.mapapi.map.MapView-->
+<!--        android:id="@+id/bmapView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent" />-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="55dp" />
 
-</RelativeLayout>
+    <com.baidu.mapapi.map.MapView
+        android:id="@+id/bmapView"
+        android:layout_marginTop="110dp"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"/>
+
+    <ImageButton
+        android:id="@+id/ib_loc"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="100dp"
+        android:background="@drawable/loc"
+        tools:ignore="MissingConstraints" />
+
+</LinearLayout>
