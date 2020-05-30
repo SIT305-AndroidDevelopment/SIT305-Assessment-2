@@ -1,15 +1,103 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<?xml version="1.0" encoding="utf-8"?>
 
-    <TextView
-        android:id="@+id/txt_user_title"
+<!--<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:layout_width="match_parent"-->
+<!--    xmlns:android="http://schemas.android.com/apk/res/android" >//add roll frame-->
+
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/userback"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="242dp">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="235dp"
+            android:layout_height="62dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="52dp"
+            android:layout_marginEnd="11dp"
+            android:text="log in and experience more!"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/btnLog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="106dp"
+            android:layout_marginEnd="98dp"
+            android:text="Log in or Sign up" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="123dp"
+        android:layout_height="121dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="74dp"
+        android:src="@drawable/logavator" />
+
+    <Button
+        android:id="@+id/btnTrack"
+        android:layout_width="305dp"
+        android:layout_height="64dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="413dp"
+        android:layout_marginEnd="50dp"
+        android:text="My track"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/btn_setting"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="39dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="9dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/white"
+        android:text="setting"
+
+
+        android:textSize="10sp" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="305dp"
+        android:layout_height="64dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_centerInParent="true"
-        android:text="UserPage"
-        android:textColor="#1B940A"
-        android:textSize="30dp" />
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="335dp"
+        android:text="Post Story"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="305dp"
+        android:layout_height="64dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="53dp"
+        android:layout_marginBottom="58dp"
+        android:text="My Car"
+        android:textSize="24sp" />
+
 
 </RelativeLayout>
+<!--</ScrollView>-->
