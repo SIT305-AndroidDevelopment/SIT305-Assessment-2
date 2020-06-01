@@ -17,12 +17,12 @@ import com.example.assessment_2.main.UserFragment;
 
 public class MainActivity extends AppCompatActivity{
     /**
-     * 主界面容器
+     * primary page container
      */
     public FrameLayout frameContainer;
 
     /**
-     * 底部导航栏
+     * Bottom navigation bar
      */
     public BottomNavigationBar bottomNavBar;
 
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity{
 
 
     /**
-     * 初始化底部导航栏
+     * initialize Bottom navigation bar
      */
     public void initTabBottom() {
         bottomNavBar.setMode(BottomNavigationBar.MODE_FIXED);
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity{
 
 
     /**
-     * 监听导航栏
+     * listener navigation bar
      */
     public void initTabListener() {
         bottomNavBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
