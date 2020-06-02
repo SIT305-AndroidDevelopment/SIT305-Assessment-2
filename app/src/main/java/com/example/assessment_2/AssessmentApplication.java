@@ -5,6 +5,8 @@ import android.content.Context;
 
 import com.baidu.mapapi.CoordType;
 import com.baidu.mapapi.SDKInitializer;
+import com.yanzhenjie.nohttp.InitializationConfig;
+import com.yanzhenjie.nohttp.NoHttp;
 
 public class AssessmentApplication extends Application {
 
@@ -22,6 +24,13 @@ public class AssessmentApplication extends Application {
         SDKInitializer.setCoordType(CoordType.BD09LL);
 
         initAppData();
+
+        InitializationConfig config = InitializationConfig.newBuilder(this)
+                .connectionTimeout(30 * 1000)
+                .readTimeout(30 * 1000)
+                .retry(10)
+                .build();
+        NoHttp.initialize(config);
     }
 
     private void initAppData() {
