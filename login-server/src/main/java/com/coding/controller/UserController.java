@@ -82,5 +82,11 @@ public class UserController {
         return Result.createBySuccess(userMapper.selectAll());
     }
 
+    @ApiOperation("更新用户接口")
+    @PostMapping("updateUser")
+    public Result<User> updateUser(User user) {
+        return userService.updateUser(user);
+    }
+
 
 }

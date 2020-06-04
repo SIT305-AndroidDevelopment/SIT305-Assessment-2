@@ -1,5 +1,6 @@
 package com.coding.domain;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -34,6 +35,12 @@ public class User extends BaseDO {
      * 密码
      */
     private String password;
+
+    @ApiModelProperty("头像")
+    private String avatar;
+
+    @ApiModelProperty("昵称")
+    private String nickname;
 
 
 }

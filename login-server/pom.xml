@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.coding</groupId>
-    <artifactId>ipv6-manager</artifactId>
+    <artifactId>login-server</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>ipv6-manager</name>
-    <description>订单管理</description>
+    <name>login-server</name>
+    <description>登录注册</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
