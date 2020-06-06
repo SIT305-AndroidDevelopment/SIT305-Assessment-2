@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -29,223 +30,256 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.assessment_2.R;
+import com.example.assessment_2.activity.AttentionActivity;
+import com.example.assessment_2.activity.CollectAndFootprintActivity;
+import com.example.assessment_2.base.BaseResponse;
+import com.example.assessment_2.login.LoginActivity;
+import com.example.assessment_2.model.TextRequest;
+import com.example.assessment_2.model.UploadFileResponse;
+import com.example.assessment_2.model.UserInfo;
+import com.example.assessment_2.user.UserInfoActivity;
 import com.example.assessment_2.util.HttpUtil;
+import com.example.assessment_2.util.OkHttpManager;
 import com.example.assessment_2.util.SharePreferenceUtil;
-import com.yanzhenjie.nohttp.Binary;
-import com.yanzhenjie.nohttp.FileBinary;
-import com.yanzhenjie.nohttp.NoHttp;
-import com.yanzhenjie.nohttp.RequestMethod;
-import com.yanzhenjie.nohttp.rest.OnResponseListener;
-import com.yanzhenjie.nohttp.rest.Request;
-import com.yanzhenjie.nohttp.rest.RequestQueue;
-import com.yanzhenjie.nohttp.rest.Response;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.example.assessment_2.util.UserInfoManager;
+import com.example.assessment_2.view.CircleImageView;
 
 import java.io.File;
 
+import static com.luck.picture.lib.tools.PictureFileUtils.getDataColumn;
+import static com.luck.picture.lib.tools.PictureFileUtils.isDownloadsDocument;
 import static com.luck.picture.lib.tools.PictureFileUtils.isExternalStorageDocument;
-import static com.yalantis.ucrop.util.FileUtils.getDataColumn;
-import static com.yalantis.ucrop.util.FileUtils.isDownloadsDocument;
-import static com.yalantis.ucrop.util.FileUtils.isMediaDocument;
+import static com.luck.picture.lib.tools.PictureFileUtils.isMediaDocument;
 
 public class UserFragment extends Fragment {
-    private static final String TAG = "UserFragment";
-    View view;
-    Button btn_upload;
-    Button text_upload;
-    ImageView iv_userBike;
-    EditText editText;
+  private static final String TAG = "UserFragment";
+  private TextView mBtnLogin;
+  private View userInfoView;
+  private CircleImageView userHeaderIv;
+  private TextView userNameTv;
+  private TextView editUserInfoBtn;
+  private Button logoutBtn;
+  Button btn_upload;
+  Button text_upload;
+  ImageView iv_userBike;
+  EditText editText;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.page_user_detail, container, false);
-        btn_upload = view.findViewById(R.id.btn_upload);
-        text_upload = view.findViewById(R.id.text_upload);
-        iv_userBike = view.findViewById(R.id.iv_userBike);
-        editText = view.findViewById(R.id.edit_content);
+  public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    View view = inflater.inflate(R.layout.page_user_detail, container, false);
 
-        String path = SharePreferenceUtil.getString(getActivity(), "imgUpload", "");
-        if (!TextUtils.isEmpty(path)) {
-            Glide.with(getActivity())
-                    .load(path)
-                    .into(iv_userBike);
-        } else {
-            Glide.with(getActivity())
-                    .load(R.drawable.banner4)
-                    .into(iv_userBike);
+    btn_upload = view.findViewById(R.id.btn_upload);
+    text_upload = view.findViewById(R.id.text_upload);
+    iv_userBike = view.findViewById(R.id.iv_userBike);
+    editText = view.findViewById(R.id.edit_content);
+    String path = SharePreferenceUtil.getString(getActivity(), "imgUpload", "");
+    if (!TextUtils.isEmpty(path)) {
+      Glide.with(getActivity())
+          .load(path)
+          .into(iv_userBike);
+    } else {
+      Glide.with(getActivity())
+          .load(R.drawable.banner4)
+          .into(iv_userBike);
+    }
+
+
+    userHeaderIv = view.findViewById(R.id.user_header_iv);
+    userNameTv = view.findViewById(R.id.user_name_tv);
+    editUserInfoBtn = view.findViewById(R.id.edit_user_tv);
+    editUserInfoBtn.setOnClickListener(new View.OnClickListener() {
+      public void onClick(View v) {
+        Intent mIntent = new Intent(getActivity(), UserInfoActivity.class);
+        startActivity(mIntent);
+      }
+    });
+    logoutBtn = view.findViewById(R.id.logout_btn);
+    logoutBtn.setOnClickListener(new View.OnClickListener() {
+      public void onClick(View v) {
+        UserInfoManager.getInstance().saveUserInfo(null);
+        changeUi();
+      }
+    });
+    view.findViewById(R.id.attention_constraint).setOnClickListener(new View.OnClickListener() {
+      public void onClick(View v) {
+        if (!isLogin()) {
+          Toast.makeText(getActivity(), "Please Log in first", Toast.LENGTH_SHORT).show();
+          return;
         }
+        Intent mIntent = new Intent(getActivity(), AttentionActivity.class);
+        getActivity().startActivity(mIntent);
+      }
+    });
+    userInfoView = view.findViewById(R.id.user_info_constraint);
+    userInfoView.setVisibility(View.GONE);
+    mBtnLogin = view.findViewById(R.id.login_tv);
+    mBtnLogin.setOnClickListener(new View.OnClickListener() {
+      public void onClick(View v) {
+        Intent mIntent = new Intent(getActivity(), LoginActivity.class);
+        startActivity(mIntent);
+      }
+    });
 
+    view.findViewById(R.id.collect_constraint).setOnClickListener(new View.OnClickListener() {
+      public void onClick(View v) {
+        if (!isLogin()) {
+          Toast.makeText(getActivity(), "Please Log in first", Toast.LENGTH_SHORT).show();
+          return;
+        }
+        Intent mIntent = new Intent(getActivity(), CollectAndFootprintActivity.class);
+        mIntent.putExtra("TYPE", 0);
+        getActivity().startActivity(mIntent);
+      }
+    });
 
-        initPermissions(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        initUploadClickListener();
-        return view;
+    view.findViewById(R.id.footprint_constraint).setOnClickListener(new View.OnClickListener() {
+      public void onClick(View v) {
+        if (!isLogin()) {
+          Toast.makeText(getActivity(), "Please Log in first", Toast.LENGTH_SHORT).show();
+          return;
+        }
+        Intent mIntent = new Intent(getActivity(), CollectAndFootprintActivity.class);
+        mIntent.putExtra("TYPE", 1);
+        getActivity().startActivity(mIntent);
+      }
+    });
+    initPermissions(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+    initUploadClickListener();
+    return view;
+  }
+
+  private boolean isLogin() {
+    if (UserInfoManager.getInstance().getUserInfo() != null && UserInfoManager.getInstance().getUserInfo().id != null) {
+      return true;
     }
+    return false;
+  }
 
-    private void initUploadClickListener() {
-        btn_upload.setOnClickListener(view -> {
-            Intent intent = new Intent(Intent.ACTION_PICK, null);
-            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-            startActivityForResult(intent, 2);
+  public void onResume() {
+    super.onResume();
+    changeUi();
+  }
 
-        });
-        text_upload.setOnClickListener(view -> {
-            uploadContent(editText.getText().toString());
-        });
+  private void changeUi() {
+    UserInfo userInfo = UserInfoManager.getInstance().getUserInfo();
+    userInfoView.setVisibility(userInfo == null ? View.GONE : View.VISIBLE);
+    logoutBtn.setVisibility(userInfo == null ? View.GONE : View.VISIBLE);
+    mBtnLogin.setVisibility(userInfo == null ? View.VISIBLE : View.GONE);
+    if (userInfo != null && userInfo.id != null) {
+      userNameTv.setText(userInfo.nickname);
+      if (userInfo.avatar != null) {
+        Glide.with(getActivity()).load(userInfo.avatar).into(userHeaderIv);
+      } else {
+        userHeaderIv.setImageResource(R.drawable.ic_touxiang);
+      }
+    } else {
+      userHeaderIv.setImageResource(R.drawable.ic_touxiang);
     }
+  }
 
-    private void uploadContent(String text) {
+  private void initUploadClickListener() {
+    btn_upload.setOnClickListener(view -> {
+      Intent intent = new Intent(Intent.ACTION_PICK, null);
+      intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+      startActivityForResult(intent, 2);
 
-        String postUrl = HttpUtil.HOST + "api/user/text";
-        //1.创建一个队列
-        RequestQueue queue = NoHttp.newRequestQueue();
-        //2.创建消息请求   参数1:String字符串,传网址  参数2:请求方式
-        final Request<JSONObject> request = NoHttp.createJsonObjectRequest(postUrl, RequestMethod.POST);
-        //3.利用队列去添加消息请求
-        //使用request对象添加上传的对象添加键与值,post方式添加上传的数据
-        request.add("text", text);
+    });
+    text_upload.setOnClickListener(view -> {
+      uploadContent(editText.getText().toString());
+    });
+  }
 
-        queue.add(1, request, new OnResponseListener<JSONObject>() {
-            @Override
-            public void onStart(int what) {
+  private void uploadContent(String text) {
+    TextRequest request = new TextRequest();
+    request.text = text;
+    new OkHttpManager(getContext(), HttpUtil.TEXT, request, BaseResponse.class, false, new OkHttpManager.ResponseCallback() {
+      public void onError(int errorType, int errorCode, String errorMsg) {
+        Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+      }
 
-            }
+      public void onSuccess(Object response) {
+        Toast.makeText(getActivity(), "Upload successful", Toast.LENGTH_SHORT).show();
+      }
+    }).execute();
+  }
 
-            @Override
-            public void onSucceed(int what, Response<JSONObject> response) {
-                JSONObject res = response.get();
-                try {
-                    if (res.getInt("status") == 0) {
-                        Toast.makeText(getContext(), "文字上传成功", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                Toast.makeText(getContext(), "文件上传失败", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailed(int what, Response<JSONObject> response) {
-            }
-
-            @Override
-            public void onFinish(int what) {
-
-            }
-        });
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 2) {
-            // 从相册返回的数据
-            if (data != null) {
-                // 得到图片的全路径
-                Uri uri = data.getData();
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (requestCode == 2) {
+      // 从相册返回的数据
+      if (data != null) {
+        // 得到图片的全路径
+        Uri uri = data.getData();
 //                iv_userBike.setImageURI(uri);
-                String path = getPath(getActivity(), uri);
-                uploadFile(path);
-            }
+        String path = getPath(getActivity(), uri);
+        uploadFile(path);
+      }
+    }
+  }
+
+  /**
+   * 专为Android4.4设计的从Uri获取文件绝对路径，以前的方法已不好使
+   */
+  @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+  public static String getPath(final Context context, final Uri uri) {
+
+    final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+    if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+
+      //一些三方的文件浏览器会进入到这个方法中，例如ES
+      //QQ文件管理器不在此列
+
+      if (isExternalStorageDocument(uri)) {
+        final String docId = DocumentsContract.getDocumentId(uri);
+        final String[] split = docId.split(":");
+        final String type = split[0];
+        if ("primary".equalsIgnoreCase(type)) {
+          return Environment.getExternalStorageDirectory() + "/" + split[1];
         }
+      }
+      // DownloadsProvider
+      else if (isDownloadsDocument(uri)) {
+      }
+      // MediaProvider
+      else if (isMediaDocument(uri)) {
+      }
+    } else if ("content".equalsIgnoreCase(uri.getScheme())) {// MediaStore (and general)
+      return getDataColumn(context, uri, null, null);
+    } else if ("file".equalsIgnoreCase(uri.getScheme())) {// File
     }
+    return null;
+  }
 
-    /**
-     * 专为Android4.4设计的从Uri获取文件绝对路径，以前的方法已不好使
-     */
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public static String getPath(final Context context, final Uri uri) {
+  /**
+   * 上传文件
+   */
+  private void uploadFile(String path) {
+    new OkHttpManager("file", System.currentTimeMillis() + ".jpg", getContext(), HttpUtil.UPLOAD_FILE,
+        new File(path), null, UploadFileResponse.class, true, new OkHttpManager.ResponseCallback() {
+      public void onError(int errorType, int errorCode, String errorMsg) {
+        Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+      }
 
-        final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
-        if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
-
-            //一些三方的文件浏览器会进入到这个方法中，例如ES
-            //QQ文件管理器不在此列
-
-            if (isExternalStorageDocument(uri)) {
-                final String docId = DocumentsContract.getDocumentId(uri);
-                final String[] split = docId.split(":");
-                final String type = split[0];
-                if ("primary".equalsIgnoreCase(type)) {
-                    return Environment.getExternalStorageDirectory() + "/" + split[1];
-                }
-            }
-            // DownloadsProvider
-            else if (isDownloadsDocument(uri)) {
-            }
-            // MediaProvider
-            else if (isMediaDocument(uri)) {
-            }
-        } else if ("content".equalsIgnoreCase(uri.getScheme())) {// MediaStore (and general)
-            return getDataColumn(context, uri, null, null);
-        } else if ("file".equalsIgnoreCase(uri.getScheme())) {// File
+      public void onSuccess(Object response) {
+        if (response != null && response instanceof UploadFileResponse) {
+          Toast.makeText(getActivity(), "图片上传成功", Toast.LENGTH_SHORT).show();
         }
-        return null;
+      }
+    }).executeFile();
+  }
+
+  /**
+   * 授权管理,并打开相册或开启相机
+   */
+  public static void initPermissions(Activity ctx, String permissionName) {
+    if (ContextCompat.checkSelfPermission(ctx, permissionName) != PackageManager.PERMISSION_GRANTED) {
+      Log.i(TAG, "需要授权 ");
+      if (ActivityCompat.shouldShowRequestPermissionRationale(ctx, permissionName)) {
+        Log.i(TAG, "拒绝过了");
+      } else {
+        Log.i(TAG, "进行授权");
+        ActivityCompat.requestPermissions(ctx, new String[]{permissionName}, 1000);
+      }
+    } else {
+      Log.i(TAG, "不需要授权 ");
     }
-
-    /**
-     * 上传文件
-     */
-    private void uploadFile(String path) {
-        String postUrl = HttpUtil.HOST + "api/user/upload";
-        //1.创建一个队列
-        RequestQueue queue = NoHttp.newRequestQueue();
-        //2.创建消息请求   参数1:String字符串,传网址  参数2:请求方式
-        final Request<JSONObject> request = NoHttp.createJsonObjectRequest(postUrl, RequestMethod.POST);
-        //3.利用队列去添加消息请求
-        //使用request对象添加上传的对象添加键与值,post方式添加上传的数据
-        Binary file = new FileBinary(new File(path));
-        request.add("file", file);
-
-        queue.add(1, request, new OnResponseListener<JSONObject>() {
-            @Override
-            public void onStart(int what) {
-
-            }
-
-            @Override
-            public void onSucceed(int what, Response<JSONObject> response) {
-                JSONObject res = response.get();
-                try {
-                    if (res.getInt("status") == 0) {
-                        String data = res.getString("data");
-                        Glide.with(getActivity())
-                                .load(path)
-                                .into(iv_userBike);
-                        SharePreferenceUtil.setString(getActivity(), "imgUpload", data);
-                        return;
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                Toast.makeText(getContext(), "文件上传失败", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailed(int what, Response<JSONObject> response) {
-            }
-
-            @Override
-            public void onFinish(int what) {
-
-            }
-        });
-    }
-
-    /**
-     * 授权管理,并打开相册或开启相机
-     */
-    public static void initPermissions(Activity ctx, String permissionName) {
-        if (ContextCompat.checkSelfPermission(ctx, permissionName) != PackageManager.PERMISSION_GRANTED) {
-            Log.i(TAG, "需要授权 ");
-            if (ActivityCompat.shouldShowRequestPermissionRationale(ctx, permissionName)) {
-                Log.i(TAG, "拒绝过了");
-            } else {
-                Log.i(TAG, "进行授权");
-                ActivityCompat.requestPermissions(ctx, new String[]{permissionName}, 1000);
-            }
-        } else {
-            Log.i(TAG, "不需要授权 ");
-        }
-    }
+  }
 }

@@ -1,89 +1,111 @@
 package com.example.assessment_2.activity;
 
-import android.app.Activity;
-import android.os.Build;
-import android.os.Bundle;
+import android.content.Intent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.assessment_2.R;
 import com.example.assessment_2.adapter.BikeListAdapter;
-import com.example.assessment_2.model.BrandItem;
-import com.example.assessment_2.model.MotorItem;
+import com.example.assessment_2.base.BaseActivity;
+import com.example.assessment_2.base.IRecyclerViewItemClickListener;
+import com.example.assessment_2.model.MotorItemDto;
+import com.example.assessment_2.model.MotorListResponse;
+import com.example.assessment_2.model.MotorcycleBrandDto;
+import com.example.assessment_2.model.UserInfo;
+import com.example.assessment_2.util.HttpUtil;
+import com.example.assessment_2.util.OkHttpManager;
+import com.example.assessment_2.util.UserInfoManager;
 
-import java.util.Comparator;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class BrandDetailActivity extends Activity {
+public class BrandDetailActivity extends BaseActivity {
+  private Button btn_sort_by_price;
+  private List<MotorItemDto> data = new ArrayList<>();
+  private MotorcycleBrandDto brandItem;
+  private ImageView iv_brand;
+  private TextView tv_brand_name;
+  private BikeListAdapter bikeListAdapter;
+  private boolean isDesc = true; //排序
 
-    private ImageView btn_back;
-    private RecyclerView bikeRecyclerView;
-    private Button btn_sort_by_price;
+  protected void initData() {
+    super.initData();
+    brandItem = (MotorcycleBrandDto) getIntent().getSerializableExtra("BRAND");
 
-    private boolean isReverse = false;
-    private BrandItem brandItem;
-    private ImageView iv_brand;
-    private TextView tv_brand_name;
+  }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.page_brand_detail);
-        btn_back = findViewById(R.id.iv_go_back);
-        btn_sort_by_price = findViewById(R.id.btn_sort_by_price);
-        bikeRecyclerView = findViewById(R.id.bike_recyclerView);
-        iv_brand = findViewById(R.id.iv_brand);
-        tv_brand_name = findViewById(R.id.tv_brandName);
+  public void initView(String titleName) {
+    super.initView(brandItem.name);
+    btn_sort_by_price = findViewById(R.id.btn_sort_by_price);
+    iv_brand = findViewById(R.id.iv_brand);
+    tv_brand_name = findViewById(R.id.tv_brandName);
+    initPageUI();
+    initRecyclerView();
+    getMotorList();
 
-        brandItem = (BrandItem) getIntent().getExtras().getSerializable("brandItem");
+    btn_sort_by_price.setOnClickListener(view -> {
+      //价格排序
+      if (isDesc) {
+        Collections.sort(data, Collections.reverseOrder());
+        isDesc = false;
+      } else {
+        Collections.sort(data);
+        isDesc = true;
+      }
+      bikeListAdapter.notifyDataSetChanged();
+    });
+  }
 
-        initPageUI();
-        initRecyclerView(brandItem.getMotoList());
-        initBackClickListener();
-        initPriceSortClickListener();
-    }
+  private void getMotorList() {
+    new OkHttpManager(this, HttpUtil.MOTOR_LIST + brandItem.id, null,
+        MotorListResponse.class, false, new OkHttpManager.ResponseCallback() {
+      public void onError(int errorType, int errorCode, String errorMsg) {
+        Toast.makeText(BrandDetailActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+      }
 
-    private void initPageUI() {
-        tv_brand_name.setText(brandItem.getBrandName());
-        iv_brand.setImageResource(brandItem.getImgRes());
-    }
+      public void onSuccess(Object response) {
+        if (response != null && response instanceof MotorListResponse) {
+          MotorListResponse resp = (MotorListResponse) response;
+          data.clear();
+          data.addAll(resp.data);
+          bikeListAdapter.notifyDataSetChanged();
+        }
+      }
+    }).execute();
+  }
+
+  protected int getLayout() {
+    return R.layout.page_brand_detail;
+  }
+
+  private void initPageUI() {
+    tv_brand_name.setText(brandItem.name);
+    Glide.with(this).load(brandItem.img).into(iv_brand);
+  }
 
 
-    private void initBackClickListener() {
-        btn_back.setOnClickListener(view -> {
-            finish();
-        });
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private void initPriceSortClickListener() {
-        btn_sort_by_price.setOnClickListener(view -> {
-            Stream<MotorItem> stream = brandItem.getMotoList().stream();
-            List<MotorItem> collect = null;
-            if (isReverse) {
-                collect = stream.sorted(Comparator.comparing(MotorItem::getPrice)).collect(Collectors.toList());
-                isReverse = false;
-            } else {
-                collect = stream.sorted(Comparator.comparing(MotorItem::getPrice).reversed()).collect(Collectors.toList());
-                isReverse = true;
-            }
-            initRecyclerView(collect);
-        });
-    }
-
-    private void initRecyclerView(List<MotorItem> motorList) {
+  private void initRecyclerView() {
 //        BikeListAdapter bikeListAdapter = new BikeListAdapter(this, R.layout.item_bike, collect);
-        BikeListAdapter bikeListAdapter = new BikeListAdapter(this, R.layout.item_bike, motorList);
-        bikeRecyclerView.setAdapter(bikeListAdapter);
-        bikeRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-    }
+    RecyclerView bikeRecyclerView = findViewById(R.id.bike_recyclerView);
+    bikeListAdapter = new BikeListAdapter(this, R.layout.item_bike, data);
+    bikeRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    bikeRecyclerView.setAdapter(bikeListAdapter);
+    bikeListAdapter.setItemClickListener(new IRecyclerViewItemClickListener() {
+      public void onItemClickListener(RecyclerView.ViewHolder holder) {
+        MotorItemDto motorItemDto = data.get(holder.getLayoutPosition());
+        Intent intent = new Intent(BrandDetailActivity.this, BikeDetailActivity.class);
+        intent.putExtra("NAME", motorItemDto.name);
+        intent.putExtra("ID", motorItemDto.id);
+        startActivity(intent);
+      }
+    });
+  }
 }

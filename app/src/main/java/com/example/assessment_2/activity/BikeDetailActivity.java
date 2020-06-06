@@ -1,69 +1,129 @@
 package com.example.assessment_2.activity;
 
-import android.app.Activity;
-import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.assessment_2.R;
-import com.example.assessment_2.model.MotorItem;
+import com.example.assessment_2.base.BaseActivity;
+import com.example.assessment_2.base.BaseResponse;
+import com.example.assessment_2.model.AddCollectRequest;
+import com.example.assessment_2.model.MotorDetailRequest;
+import com.example.assessment_2.model.MotorDetailResponse;
+import com.example.assessment_2.model.MotorItemDto;
+import com.example.assessment_2.model.UserInfo;
+import com.example.assessment_2.util.HttpUtil;
+import com.example.assessment_2.util.OkHttpManager;
+import com.example.assessment_2.util.UserInfoManager;
 
-public class BikeDetailActivity extends Activity {
-    private ImageView btn_back;
-    private ImageView bikePic;
-    private RecyclerView bikeRecyclerView;
-    private Button btn_sort_by_price;
-    private int position;
+public class BikeDetailActivity extends BaseActivity {
+  private ImageView bikePic;
+  private RecyclerView bikeRecyclerView;
+  private Button btn_sort_by_price;
+  private int position;
+  private String motorId;
+  private String motorName;
 
-    private boolean isReverse = false;
-    private ImageView iv_bike;
-    private TextView tv_bike_name;
+  private boolean isReverse = false;
+  private ImageView iv_bike;
+  private TextView tv_bike_name;
 
-    private TextView tvHorsePowerValue;
-    private TextView tvTorqueValue;
-    private TextView tvWeightValue;
-    private TextView tvDisplacementValue;
-    private TextView tvTankVolumeValue;
-    private MotorItem motorItem;
+  private TextView tvHorsePowerValue;
+  private TextView tvTorqueValue;
+  private TextView tvWeightValue;
+  private TextView tvDisplacementValue;
+  private TextView tvTankVolumeValue;
+  private ImageView collectBtn;
+  private UserInfo userInfo;
+  private boolean isCollect;
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.page_bike_detail);
+  protected void initData() {
+    super.initData();
+    motorName = getIntent().getStringExtra("NAME");
+    motorId = getIntent().getStringExtra("ID");
+    userInfo = UserInfoManager.getInstance().getUserInfo();
 
-        btn_back = findViewById(R.id.iv_go_back);
+  }
 
-        iv_bike = findViewById(R.id.iv_bike);
-        tv_bike_name = findViewById(R.id.tv_bike_name);
+  public void initView(String titleName) {
+    super.initView(motorName);
+    iv_bike = findViewById(R.id.iv_bike);
+    tv_bike_name = findViewById(R.id.tv_bike_name);
+    collectBtn = this.findViewById(R.id.collect_btn);
+    collectBtn.setVisibility(userInfo != null && userInfo.id != null && !userInfo.id.isEmpty() ? View.VISIBLE : View.GONE);
+    collectBtn.setOnClickListener(new View.OnClickListener() {
+      public void onClick(View v) {
+        collect();
+      }
+    });
+    tvHorsePowerValue = findViewById(R.id.tv_value_horsePower);
+    tvTorqueValue = findViewById(R.id.tv_value_torque);
+    tvWeightValue = findViewById(R.id.tv_value_weight);
+    tvDisplacementValue = findViewById(R.id.tv_value_displacement);
+    tvTankVolumeValue = findViewById(R.id.tv_value_tankVolume);
 
-        motorItem = (MotorItem) getIntent().getExtras().getSerializable("MotorItem");
-
-        tvHorsePowerValue = findViewById(R.id.tv_value_horsePower);
-        tvTorqueValue = findViewById(R.id.tv_value_torque);
-        tvWeightValue = findViewById(R.id.tv_value_weight);
-        tvDisplacementValue = findViewById(R.id.tv_value_displacement);
-        tvTankVolumeValue = findViewById(R.id.tv_value_tankVolume);
-
-        tvHorsePowerValue.setText(""+motorItem.getHorsePower());
-        tvTorqueValue.setText(""+motorItem.getTorque());
-        tvWeightValue.setText(""+motorItem.getWeight());
-        tvDisplacementValue.setText(""+motorItem.getDisplacement());
-        tvTankVolumeValue.setText(""+motorItem.getTankVolume());
-
-        iv_bike.setImageResource(motorItem.getPicRes());
-        tv_bike_name.setText(motorItem.getName());
-
-        initBackClickListener();
+    MotorDetailRequest request = new MotorDetailRequest();
+    request.motorId = motorId;
+    if (UserInfoManager.getInstance().getUserInfo() != null) {
+      request.userId = UserInfoManager.getInstance().getUserInfo().id + "";
     }
+    new OkHttpManager(this, HttpUtil.MOTOR_DETAIL, request, MotorDetailResponse.class, true,
+        new OkHttpManager.ResponseCallback() {
+          public void onError(int errorType, int errorCode, String errorMsg) {
+            Toast.makeText(BikeDetailActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+          }
 
-    private void initBackClickListener() {
-        btn_back.setOnClickListener(view -> {
-            finish();
-        });
+          public void onSuccess(Object response) {
+            if (response != null && response instanceof MotorDetailResponse) {
+              setData(((MotorDetailResponse) response).data);
+            }
+          }
+        }).execute();
+  }
+
+  //收藏 取消收藏
+  private void collect() {
+    AddCollectRequest request = new AddCollectRequest();
+    request.userId = userInfo.id;
+    if (isCollect) {
+      request.collectId = motorId;
+    } else {
+      request.motorId = motorId;
     }
+    new OkHttpManager(this, isCollect ? HttpUtil.DELETE_COLLECT : HttpUtil.ADD_COLLECT, request, BaseResponse.class, true,
+        new OkHttpManager.ResponseCallback() {
+          public void onError(int errorType, int errorCode, String errorMsg) {
+            Toast.makeText(BikeDetailActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+          }
+
+          public void onSuccess(Object response) {
+            isCollect = !isCollect;
+            Toast.makeText(BikeDetailActivity.this, isCollect ? "收藏成功" : "取消收藏成功", Toast.LENGTH_SHORT).show();
+            collectBtn.setImageResource(isCollect ? R.mipmap.ic_collect : R.mipmap.ic_un_collect);
+          }
+        }).execute();
+  }
+
+  private void setData(MotorItemDto motorItem) {
+    tvHorsePowerValue.setText("" + motorItem.horsePower);
+    tvTorqueValue.setText("" + motorItem.torque);
+    tvWeightValue.setText("" + motorItem.weight);
+    tvDisplacementValue.setText("" + motorItem.displacement);
+    tvTankVolumeValue.setText("" + motorItem.tankVolume);
+    Glide.with(BikeDetailActivity.this).load(motorItem.picRes).into(iv_bike);
+    tv_bike_name.setText(motorItem.name);
+    isCollect = motorItem.collected;
+    collectBtn.setImageResource(isCollect ? R.mipmap.ic_collect : R.mipmap.ic_un_collect);
+  }
+
+  protected int getLayout() {
+    return R.layout.page_bike_detail;
+  }
+
 
 }
