@@ -1,11 +1,13 @@
 package com.coding.domain;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Data
@@ -15,12 +17,18 @@ import javax.persistence.Table;
 public class MotorItem extends BaseDO {
 
     private String name;
-    private String torque;
-    private String weight;
-    private String displacement;
-    private String tankVolume;
+    private Integer horsePower;
+    private Integer torque;
+    private Integer weight;
+    private Integer displacement;
+    private Integer tankVolume;
     private String picRes;
-    private String price;
-    private String horsePower;
+    private Integer price;
+    @ApiModelProperty("品牌")
+    private Long brandId;
+
+    @ApiModelProperty("是否收藏")
+    @Transient
+    private boolean collected;
 
 }

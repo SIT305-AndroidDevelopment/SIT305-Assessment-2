@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.coding</groupId>
-    <artifactId>login-server</artifactId>
+    <artifactId>motor-server</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>login-server</name>
+    <name>motor-server</name>
     <description>登录注册</description>
 
     <parent>
@@ -206,7 +206,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <repository>${artifactId}</repository>
+                    <repository>${docker.image.prefix}/${artifactId}</repository>
                     <tag>${project.version}</tag>
                     <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
                     <buildArgs>
