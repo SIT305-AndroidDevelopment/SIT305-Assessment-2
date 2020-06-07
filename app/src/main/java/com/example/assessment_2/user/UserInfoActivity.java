@@ -62,7 +62,7 @@ public class UserInfoActivity extends BaseActivity implements EasyPermissions.Pe
           return;
         }
         if (headerPath != null && !headerPath.isEmpty() && !headerPath.startsWith("http")) {
-          //有头像需要更换
+          //Avatar need to be replaced
           uploadFile(headerPath);
         } else {
           updateUserInfo();
@@ -84,14 +84,14 @@ public class UserInfoActivity extends BaseActivity implements EasyPermissions.Pe
 
       public void onSuccess(Object response) {
         if (response != null) {
-          //资料更新成功
+          //Information updated successfully
           userInfo.avatar = headerPath;
           userInfo.nickname = nikeNameEt.getText().toString();
           UserInfoManager.getInstance().saveUserInfo(userInfo);
           finish();
         }
       }
-    }).execute();
+    }).NetRequest();
   }
 
   public void takeSuccess(TResult result) {
@@ -105,7 +105,7 @@ public class UserInfoActivity extends BaseActivity implements EasyPermissions.Pe
   }
 
   /**
-   * 上传文件
+   * upload file
    */
   private void uploadFile(String path) {
     new OkHttpManager("file", System.currentTimeMillis() + ".jpg", this, HttpUtil.UPLOAD_FILE,
@@ -120,7 +120,7 @@ public class UserInfoActivity extends BaseActivity implements EasyPermissions.Pe
           updateUserInfo();
         }
       }
-    }).executeFile();
+    }).NetUploadFile();
   }
 
   public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {

@@ -88,14 +88,12 @@ public class MapFragment extends Fragment {
 
     private void initRecyclerView() {
         List<StoreItem> list = new ArrayList<>();
-        //获取layout结构设置 决定布局属性
         //recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
         list = AppDataFactory.getStoreList();
 
         StoreListAdapter adapter = new StoreListAdapter((FragmentActivity) getContext(), R.layout.item_store, list);
-        //为recyclerview设置适配器
         recyclerView.setAdapter(adapter);
         initStoreMarkers(list);
 
@@ -107,7 +105,7 @@ public class MapFragment extends Fragment {
             public boolean onItemLongClick(BaseQuickAdapter adapter, View view, int position) {
 //                Toast.makeText(getActivity(), "1111", Toast.LENGTH_LONG).show();
                 StoreItem storeItem = finalList.get(position);
-                showChoosePicDialog(storeItem);
+                showChooseDialog(storeItem);
 
                 return false;
             }
@@ -117,21 +115,21 @@ public class MapFragment extends Fragment {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 StoreItem storeItem = finalList.get(position);
-                //设定中心点坐标
+                //Set center point coordinates
                 //LatLng cenpt = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
                 LatLng cenpt = new LatLng(storeItem.latitude, storeItem.longitude);
 
-                //定义地图状态
+                //Define map status
                 MapStatus mMapStatus = new MapStatus.Builder()
-                        //要移动的点
+                        //Point to move
                         .target(cenpt)
-                        //放大地图到20倍
+                        //Enlarge the map to 15 times
                         .zoom(15)
                         .build();
-                //定义MapStatusUpdate对象，以便描述地图状态将要发生的变化
+                //Define the MapStatusUpdate object to describe the changes that will occur in the map status
                 MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
 
-                //改变地图状态
+                //Change map status
                 mBaiDuMap.setMapStatus(mMapStatusUpdate);
             }
             // mBaiDuMap.setMyLocationEnabled(true);
@@ -140,22 +138,22 @@ public class MapFragment extends Fragment {
 
     private void initStoreMarkers(List<StoreItem> storeList) {
         for (StoreItem bean : storeList) {
-            //定义Maker坐标点
+            //Define Maker coordinates
             LatLng point = new LatLng(bean.latitude, bean.longitude);
-//构建Marker图标
+            //Build Marker icon points
             BitmapDescriptor bitmap = BitmapDescriptorFactory
                     .fromResource(R.drawable.ic_marker);
-//构建MarkerOption，用于在地图上添加Marker
+            //Build MarkerOption to add Marker on the map
             OverlayOptions option = new MarkerOptions()
-                    .position(point) //必传参数
-                    .icon(bitmap) //必传参数
+                    .position(point) //Required parameter
+                    .icon(bitmap) //Required parameter
                     .draggable(true)
-//设置平贴地图，在地图中双指下拉查看效果
+                    //Set up a flat map, two-finger pull down on the map to see the effect
                     .flat(true)
                     .alpha(0.5f);
 
 
-            //在地图上添加Marker，并显示
+            //Add Marker on the map and display
             Marker marker = (Marker)mBaiDuMap.addOverlay(option);
             Bundle bundle = new Bundle();
             bundle.putString("storeName",bean.getStoreName());
@@ -175,18 +173,15 @@ public class MapFragment extends Fragment {
 
         LatLng cenpt = new LatLng(storeList.get(0).getLatitude(), storeList.get(0).getLongitude());
 
-        //定义地图状态
+        //Define map status
         MapStatus mMapStatus = new MapStatus.Builder()
-                //要移动的点
+                //Point to move
                 .target(cenpt)
-                //放大地图到20倍
+                //Enlarge the map to 8 times
                 .zoom(8)
                 .build();
 
-        //定义MapStatusUpdate对象，以便描述地图状态将要发生的变化
         MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
-
-        //改变地图状态
         mBaiDuMap.setMapStatus(mMapStatusUpdate);
     }
 
@@ -194,34 +189,34 @@ public class MapFragment extends Fragment {
         btn_loc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //设定中心点坐标
+                //Set center point coordinates
                 // LatLng cenpt = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
                 LatLng cenpt = new LatLng(latitude, longitude);
 
-                //定义地图状态
+                //Define map status
                 MapStatus mMapStatus = new MapStatus.Builder()
-                        //要移动的点
+                        //Point to move
                         .target(cenpt)
-                        //放大地图到20倍
+                        //Enlarge the map to 15 times
                         .zoom(15)
                         .build();
 
-                //定义Maker坐标点
+                //Define Maker coordinates
                 LatLng point = new LatLng(latitude, longitude);
-                //构建Marker图标
+                //Build Marker icon
                 BitmapDescriptor bitmap = BitmapDescriptorFactory
                         .fromResource(R.drawable.ic_honda);
-                //构建MarkerOption，用于在地图上添加Marker
+                //Build MarkerOption to add Marker on the map
                 OverlayOptions option = new MarkerOptions()
                         .position(point)
                         .icon(bitmap);
-                //在地图上添加Marker，并显示
+                //Add Marker on the map and display
                 mBaiDuMap.addOverlay(option);
 
-                //定义MapStatusUpdate对象，以便描述地图状态将要发生的变化
+                //Define the MapStatusUpdate object to describe the changes that will occur in the map status
                 MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newMapStatus(mMapStatus);
 
-                //改变地图状态
+                //Change map status
                 mBaiDuMap.setMapStatus(mMapStatusUpdate);
             }
         });
@@ -231,40 +226,40 @@ public class MapFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void initLocation() {
-        //声明LocationClient类
+        //Declare the LocationClient class
         mLocationClient = new LocationClient(getActivity());
-        //注册监听函数
+        //Register monitor function
         mLocationClient.registerLocationListener(myListener);
 
-        //通过LocationClientOption设置LocationClient相关参数
+        //Set LocationClient related parameters through LocationClientOption
         LocationClientOption option = new LocationClientOption();
-        option.setOpenGps(true); // 打开gps
-        option.setCoorType("bd09ll"); // 设置坐标类型
+        option.setOpenGps(true); // Turn on gps
+        option.setCoorType("bd09ll"); // Set coordinate type
         option.setScanSpan(1000000);
 
-        //设置locationClientOption
+        //Set locationClientOption
         mLocationClient.setLocOption(option);
 
-        //注册LocationListener监听器
+        //Register LocationListener
         MyLocationListener myLocationListener = new MyLocationListener();
         mLocationClient.registerLocationListener(myLocationListener);
 
-        //开启地图定位图层
+        //Turn on the map location layer
         mLocationClient.start();
     }
 
 
     public class MyLocationListener extends BDAbstractLocationListener {
-        //定位信息回调
+        //Location information callback
         @Override
         public void onReceiveLocation(BDLocation location) {
-            //mapView 销毁后不在处理新接收的位置
+            //mapView does not process the newly received position after being destroyed
             if (location == null || mMapView == null) {
                 return;
             }
             MyLocationData locData = new MyLocationData.Builder()
                     .accuracy(location.getRadius())
-                    // 此处设置开发者获取到的方向信息，顺时针0-360
+                    //Set the direction information obtained by the developer here, clockwise 0-360
                     .direction(location.getDirection()).latitude(location.getLatitude())
                     .longitude(location.getLongitude()).build();
             mBaiDuMap.setMyLocationData(locData);
@@ -278,23 +273,23 @@ public class MapFragment extends Fragment {
 
 
     private void getPermissionMethod() {
-        //授权列表
+        //Authorization list
         List<String> permissionList = new ArrayList<>();
 
-        //检查是否获取该权限 ACCESS_FINE_LOCATION
+        //Check if the permission is obtained ACCESS_FINE_LOCATION
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             permissionList.add(Manifest.permission.ACCESS_FINE_LOCATION);
         }
 
-        if (!permissionList.isEmpty()) { //权限列表不是空
+        if (!permissionList.isEmpty()) { //Permission list is not empty
             String[] permissions = permissionList.toArray(new String[permissionList.size()]);
-            //动态申请权限的请求
+            //Dynamic permission request
             ActivityCompat.requestPermissions(getActivity(), permissions, 1);
         }
     }
 
     /**
-     * 监听用户是否授权
+     * Monitor user authorization
      */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -304,13 +299,13 @@ public class MapFragment extends Fragment {
                 if (grantResults.length > 0) {
                     for (int result : grantResults) {
                         if (result != PackageManager.PERMISSION_GRANTED) {
-                            //拒绝获取权限
-//                            Toast.makeText(this, "必须统一所有权限才能使用本程序", Toast.LENGTH_SHORT).show();
+                            //Deny permission
+//                            Toast.makeText(this, "All permissions must be unified to use this program", Toast.LENGTH_SHORT).show();
 //                            finish();
 //                            return;
                         }
                     }
-//获得权限后初始化定位
+//Initialize positioning after obtaining permission
                     initLocation();
                 }
                 break;
@@ -341,12 +336,7 @@ public class MapFragment extends Fragment {
         super.onDestroy();
     }
 
-
-    /**
-     * 显示修改头像的对话框
-     * @param storeItem
-     */
-    private void showChoosePicDialog(final StoreItem storeItem) {
+    private void showChooseDialog(final StoreItem storeItem) {
         View bottomView = View.inflate(getActivity(), R.layout.bottom_dialog, null);
         TextView mAlbum = bottomView.findViewById(R.id.tv_baidu);
         TextView mCamera = bottomView.findViewById(R.id.tv_australia);
@@ -359,38 +349,31 @@ public class MapFragment extends Fragment {
         WindowManager.LayoutParams lp = getActivity().getWindow().getAttributes();
         lp.alpha = 0.5f;
         getActivity().getWindow().setAttributes(lp);
-        pop.setOnDismissListener(new PopupWindow.OnDismissListener() {
-
-            @Override
-            public void onDismiss() {
-                WindowManager.LayoutParams lp = getActivity().getWindow().getAttributes();
-                lp.alpha = 1f;
-                getActivity().getWindow().setAttributes(lp);
-            }
+        pop.setOnDismissListener(() -> {
+            WindowManager.LayoutParams lp1 = getActivity().getWindow().getAttributes();
+            lp1.alpha = 1f;
+            getActivity().getWindow().setAttributes(lp1);
         });
         pop.setAnimationStyle(R.style.main_menu_photo_anim);
         pop.showAtLocation(getActivity().getWindow().getDecorView(), Gravity.BOTTOM, 0, 0);
 
-        View.OnClickListener clickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int i = view.getId();
-                if (i == R.id.tv_baidu) {//百度地图
-                    Uri uri = Uri.parse("baidumap://map/direction?destination=latlng:"+storeItem.latitude+","+ storeItem.longitude+"|name:"+"目的地名称"+"&mode=driving");
-                    getActivity().startActivity(new Intent(Intent.ACTION_VIEW, uri));
-                }
-
-                if (i == R.id.tv_australia) {//拍照
-                    Intent intent = new Intent(getActivity(), WebViewActivity.class);
-                    intent.putExtra("URL",storeItem.URL);
-                    getActivity().startActivity(intent);
-                }
-
-                if (i == R.id.tv_cancel) {//取消
-                    //closePopupWindow();
-                }
-                closePopupWindow();
+        View.OnClickListener clickListener = view -> {
+            int i = view.getId();
+            if (i == R.id.tv_baidu) {
+                Uri uri = Uri.parse("baidumap://map/direction?destination=latlng:"+storeItem.latitude+","+ storeItem.longitude+"|name:"+"目的地名称"+"&mode=driving");
+                getActivity().startActivity(new Intent(Intent.ACTION_VIEW, uri));
             }
+
+            if (i == R.id.tv_australia) {
+                Intent intent = new Intent(getActivity(), WebViewActivity.class);
+                intent.putExtra("URL",storeItem.URL);
+                getActivity().startActivity(intent);
+            }
+
+            if (i == R.id.tv_cancel) {
+                //closePopupWindow();
+            }
+            closePopupWindow();
         };
 
         mAlbum.setOnClickListener(clickListener);

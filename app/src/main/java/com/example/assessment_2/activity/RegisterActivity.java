@@ -39,7 +39,7 @@ public class RegisterActivity extends BaseActivity {
           return;
         }
         if (!password.equals(password2)) {
-          Toast.makeText(RegisterActivity.this, "The password is not same", Toast.LENGTH_SHORT).show();
+          Toast.makeText(RegisterActivity.this, "The password is name same", Toast.LENGTH_SHORT).show();
           return;
         }
         register(userName, password);
@@ -60,7 +60,7 @@ public class RegisterActivity extends BaseActivity {
         Toast.makeText(RegisterActivity.this, "Register successfully", Toast.LENGTH_SHORT).show();
         finish();
       }
-    }).execute();
+    }).NetRequest();
   }
 
   protected int getLayout() {

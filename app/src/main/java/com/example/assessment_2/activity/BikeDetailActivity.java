@@ -69,6 +69,7 @@ public class BikeDetailActivity extends BaseActivity {
 
     MotorDetailRequest request = new MotorDetailRequest();
     request.motorId = motorId;
+
     if (UserInfoManager.getInstance().getUserInfo() != null) {
       request.userId = UserInfoManager.getInstance().getUserInfo().id + "";
     }
@@ -82,11 +83,12 @@ public class BikeDetailActivity extends BaseActivity {
             if (response != null && response instanceof MotorDetailResponse) {
               setData(((MotorDetailResponse) response).data);
             }
+
           }
-        }).execute();
+        }).NetRequest();
   }
 
-  //收藏 取消收藏
+  //like/unlike
   private void collect() {
     AddCollectRequest request = new AddCollectRequest();
     request.userId = userInfo.id;
@@ -106,7 +108,7 @@ public class BikeDetailActivity extends BaseActivity {
             Toast.makeText(BikeDetailActivity.this, isCollect ? "Collected successfully" : "cancel to collect", Toast.LENGTH_SHORT).show();
             collectBtn.setImageResource(isCollect ? R.mipmap.ic_collect : R.mipmap.ic_un_collect);
           }
-        }).execute();
+        }).NetRequest();
   }
 
   private void setData(MotorItemDto motorItem) {

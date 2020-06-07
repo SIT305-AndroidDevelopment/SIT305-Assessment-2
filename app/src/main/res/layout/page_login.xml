@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/ic_beijing3">
+    android:background="@drawable/ic_background3">
 
     <include layout="@layout/view_common_title" />
 

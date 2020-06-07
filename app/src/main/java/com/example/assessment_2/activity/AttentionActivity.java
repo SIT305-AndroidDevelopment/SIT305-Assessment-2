@@ -30,7 +30,7 @@ public class AttentionActivity extends BaseActivity {
     getAttentionList();
   }
 
-  //获取关注列表
+  //get list attention
   private void getAttentionList() {
     new OkHttpManager(this, HttpUtil.COLLECT_BRAND_LIST + UserInfoManager.getInstance().getUserInfo().id,
         null, MotorcycleBrandListResponse.class, true, new OkHttpManager.ResponseCallback() {
@@ -46,7 +46,7 @@ public class AttentionActivity extends BaseActivity {
           adapter.notifyDataSetChanged();
         }
       }
-    }).execute();
+    }).NetRequest();
   }
 
   private void initRecyclerView() {
@@ -80,6 +80,6 @@ public class AttentionActivity extends BaseActivity {
   }
 
   protected int getLayout() {
-    return R.layout.activity_attention;
+    return R.layout.activity_like;
   }
 }

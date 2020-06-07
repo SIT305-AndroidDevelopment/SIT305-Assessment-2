@@ -54,10 +54,7 @@ public class LoginActivity extends BaseActivity {
   }
 
   /**
-   * 进行登录请求的数据库查询
-   *
-   * @param username 用户名
-   * @param password 密码
+   * Perform database query for login request
    */
   private void tryToLogin(String username, String password) {
     LoginRequest request = new LoginRequest();
@@ -78,6 +75,6 @@ public class LoginActivity extends BaseActivity {
           Toast.makeText(LoginActivity.this, "log in failed", Toast.LENGTH_SHORT).show();
         }
       }
-    }).execute();
+    }).NetRequest();
   }
 }

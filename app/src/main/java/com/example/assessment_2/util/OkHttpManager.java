@@ -27,86 +27,61 @@ import okhttp3.Call;
 
 public class OkHttpManager {
   /*=======================Model=================*/
-  /**
-   * 是否手动取消Http
-   */
   private boolean isCancelNormal = false;
-  /**
-   * 当前请求网络的上下文
-   */
   private Context mContext;
   /**
-   * 设置超时时间
+   * Set timeout
    */
   private long connTimeOut = 1000 * 30;
   /**
-   * 是否显示加载中对话框
+   * Whether to display the loading dialog
    */
   private boolean isShowLoading = false;
   /**
-   * 每一个请求的OkHttp实例
+   * OkHttp instance for each request
    */
   private RequestCall call = null;
   /**
-   * 解析成功时要返回的数据对象
+   * The data object to be returned when the parsing is successful
    */
   private Class responseClass;
   /**
-   * 请求成功的实体类
+   * Requested entity class
    */
   private ResponseCallback mResponseCallback;
   /**
-   * 下载文件时请求成功的实体类
+   * Entity class requested successfully when downloading the file
    */
   private DownLoadFileRespCallback mDownloadFileRespCallBack;
   /**
-   * 传过来的url
+   * Url passed
    */
   private String url = "";
-  /**
-   * post请求的json
-   */
   private String postJson = "";
-  /**
-   * 是否立即显示对话框
-   */
-  private boolean isNowDialog;
-  /**
-   * 单个文件 File
-   */
   private File file = null;
   /**
-   * 添加图片时候的 路径
+   * Path when adding pictures
    */
   private String profileImage = "";
   /**
-   * 上传文件时的文件名
+   * File name when uploading file
    */
   private String fileName = "";
   /**
-   * 下载文件时的文件名
-   */
-  private String downloadFileName = "";
-  /*================View==================*/
-  /**
-   * 加载中对话框
+   * Loading dialog
    */
   private ProgressDialog mLoadingDialog = null;
 
-  /*=================Control================*/
-
-  /*=================LifeCycle================*/
-
   /**
-   * 普通 接口请求
+   * Common interface request
    *
-   * @param mContext          当前应用的上下文
-   * @param url               要请求的接口url 例：/web-app/createActivity/viewActInfo
-   *                          默认参数类型为：application/json; charset=UTF-8
-   * @param request           对应的请求实体类,,为null时，表示get请求
-   * @param responseClass     对应的响应实体类模型
-   * @param isShowLoading     请求过程中是否显示“加载中...”对话框
-   * @param mResponseCallback 操作成功与失败的返回结果
+   * @param mContext          Current application context
+   * @param url               Example of the interface url to request: /web-app/createActivity/viewActInfo
+   *                          The default parameter type is: application/json; charset=UTF-8
+   * @param request           The corresponding request entity class, when it is null, means get request
+   * @param responseClass     Corresponding response entity class model
+   * @param isShowLoading     Whether to display "Loading..." dialog box during request
+   * @param mResponseCallback Return result of operation success and failure
    */
   public OkHttpManager(Context mContext, String url, Object request, Class responseClass,
                        boolean isShowLoading, ResponseCallback mResponseCallback) {
@@ -121,10 +96,10 @@ public class OkHttpManager {
   }
 
   /**
-   * 上传图片、文件 单个上传
-   * 接口请求
+   * Upload pictures and files
+   * Interface request
    *
-   * @param profileImage      传给服务器时 文件的 key
+   * @param profileImage      The file key when passed to the server
    * @param mContext
    * @param url
    * @param file
@@ -147,13 +122,12 @@ public class OkHttpManager {
     }
   }
 
-
   /**
-   * 开始请求
+   * Start request
    */
-  public void execute() {
-    if (!this.check(mContext)) {  //判断网络
-      if (mResponseCallback != null) {//接口异常
+  public void NetRequest() {
+    if (!this.check(mContext)) {  //Judging the network
+      if (mResponseCallback != null) {//Interface exception
         mResponseCallback.onError(-1, 0, "Connection Broken");
       }
       return;
@@ -163,7 +137,7 @@ public class OkHttpManager {
     }
 
     try {
-      if (postJson == null || TextUtils.isEmpty(postJson)) {//get请求
+      if (postJson == null || TextUtils.isEmpty(postJson)) {
         call = OkHttpUtils
                 .get()
                 .url(url)
@@ -171,13 +145,13 @@ public class OkHttpManager {
                 .build()
                 .connTimeOut(connTimeOut);
       } else {
-        /* 将JSON数据转换为Map<String, String> */
+        /* convert Json to Map<String, String> */
         GsonBuilder gb = new GsonBuilder();
         Gson g = gb.create();
         Map<String, String> map = g.fromJson(postJson, new TypeToken<Map<String, String>>() {
         }
                 .getType());
-        /* 设置okhttp */
+        /* Set okhttp */
 
         call = OkHttpUtils
                 .post()
@@ -207,20 +181,20 @@ public class OkHttpManager {
           mLoadingDialog.dismiss();
           mLoadingDialog = null;
         }
-        if (isCancelNormal) {//手动断开
+        if (isCancelNormal) {//Manually disconnect
           return;
         }
-        if (e.toString().contains("SocketTimeoutException")) {//网络超时
-          if (mResponseCallback != null) {//接口异常
+        if (e.toString().contains("SocketTimeoutException")) {
+          if (mResponseCallback != null) {//Interface exception
             mResponseCallback.onError(0, id, "Connection timed out, please try again later");
           }
-        } else if (e.toString().contains("UnknownHostException")) {//网络断开
-//                    Toast.showToast("网络断开", JJBToast.WARNING);
-          if (mResponseCallback != null) {//接口异常
+        } else if (e.toString().contains("UnknownHostException")) {
+//                    Toast.showToast("Disconnected from the network", JJBToast.WARNING);
+          if (mResponseCallback != null) {//Interface exception
             mResponseCallback.onError(-1, id, "Connection broken, please check internet");
           }
         } else {
-          if (mResponseCallback != null) {//接口异常
+          if (mResponseCallback != null) {//Interface exception
             mResponseCallback.onError(1, id, "No response of server");
           }
         }
@@ -243,10 +217,9 @@ public class OkHttpManager {
           e.printStackTrace();
           if (mResponseCallback != null) {
             Log.e("TAG", "==okHttp error " + e.toString());
-            mResponseCallback.onError(2, 0, "Data parsing exception");//数据解析异常
+            mResponseCallback.onError(2, 0, "Data parsing exception");//Data parsing exception
           }
         }
-        /*判断code为非200的各种状态的toast*/
         if (object instanceof BaseResponse) {
           BaseResponse baseResponse = (BaseResponse) object;
           if (baseResponse.status != 0) {
@@ -265,18 +238,18 @@ public class OkHttpManager {
   }
 
   /**
-   * 上传文件请求
+   * Upload file request
    */
-  public void executeFile() {
-    if (!this.check(mContext)) {  //判断网络
-//            JJBToast.showToast("网络断开", JJBToast.WARNING);
-      if (mResponseCallback != null) {//接口异常
+  public void NetUploadFile() {
+    if (!this.check(mContext)) {
+//            JJBToast.showToast("Disconnected from the network", JJBToast.WARNING);
+      if (mResponseCallback != null) {//Interface exception
         mResponseCallback.onError(-1, 0, "Internet connection broken");
       }
       return;
     }
     if (this.file == null) {
-      if (mResponseCallback != null) {//接口异常
+      if (mResponseCallback != null) {//Interface exception
         mResponseCallback.onError(-1, 0, "Upload failed");
       }
       return;
@@ -285,7 +258,6 @@ public class OkHttpManager {
       showNormalLoading();
     }
     try {
-      /* 将JSON数据转换为Map<String, String> */
       GsonBuilder gb = new GsonBuilder();
       Gson g = gb.create();
       Map<String, String> map = g.fromJson(postJson, new TypeToken<Map<String, String>>() {
@@ -305,7 +277,7 @@ public class OkHttpManager {
       }
       if (mResponseCallback != null) {
         Log.e("TAG", "==okHttp error " + e.toString());
-        mResponseCallback.onError(3, 0, "Unusual parameter request");//数据解析异常
+        mResponseCallback.onError(3, 0, "Unusual parameter request");
       }
       return;
     }
@@ -317,20 +289,20 @@ public class OkHttpManager {
           mLoadingDialog.dismiss();
           mLoadingDialog = null;
         }
-        if (isCancelNormal) {//手动断开
+        if (isCancelNormal) {//Manually disconnect
           return;
         }
-        if (e.toString().contains("SocketTimeoutException")) {//网络超时
-          if (mResponseCallback != null) {//接口异常
+        if (e.toString().contains("SocketTimeoutException")) {//network timeout
+          if (mResponseCallback != null) {//Interface exception
             mResponseCallback.onError(0, id, "Connection timed out, please try again later");
           }
-        } else if (e.toString().contains("UnknownHostException")) {//网络断开
-//                    Toast.showToast("网络断开", JJBToast.WARNING);
-          if (mResponseCallback != null) {//接口异常
+        } else if (e.toString().contains("UnknownHostException")) {//Disconnected from the network
+//                    Toast.showToast("Disconnected from the network", JJBToast.WARNING);
+          if (mResponseCallback != null) {//Interface exception
             mResponseCallback.onError(-1, id, "The network is disconnected, please check the network connection");
           }
         } else {
-          if (mResponseCallback != null) {//接口异常
+          if (mResponseCallback != null) {//Interface exception
             mResponseCallback.onError(1, id, "Failed to connect to the server, please contact the administrator");
           }
         }
@@ -353,7 +325,7 @@ public class OkHttpManager {
           e.printStackTrace();
           if (mResponseCallback != null) {
             Log.e("TAG", "==okHttp error " + e.toString());
-            mResponseCallback.onError(2, 0, "Data parsing exception");//数据解析异常
+            mResponseCallback.onError(2, 0, "Data parsing exception");//Data parsing exception
           }
         }
         if (mResponseCallback != null && object != null) {
@@ -365,7 +337,7 @@ public class OkHttpManager {
 
 
   /**
-   * 取消当前接口请求
+   * Cancel current interface request
    */
   public void cancel() {
     if (mLoadingDialog != null) {
@@ -379,68 +351,63 @@ public class OkHttpManager {
   }
 
   /**
-   * 响应的操作接口
+   * Response operation interface
    */
   public interface ResponseCallback {
     /**
-     * 失败原因
+     * Reason for failure
      *
-     * @param errorType -1：网络断开  ０:超时　　1：网络异常,http的code码非200　　２：根据响应Bean数据解析异常  3：请求设置的参数异常
-     * @param errorCode 　网络请求错误的code码
-     * @param errorMsg  具体的异常信息（通常没有）
+     * @param errorType -1: Network disconnected 0: Timeout 1: Network abnormality, http code is not 200 　　 2: Parsing abnormality based on the response bean data 3: Parameter abnormality requested
+     * @param errorCode 　Network request error code
+     * @param errorMsg specific exception information (usually not available)
      */
     void onError(int errorType, int errorCode, String errorMsg);
 
     /**
-     * 请求成功
+     * Successful request
      *
-     * @param response 对应的成功的实体类
+     * The successful entity class corresponding to @param response
      */
     void onSuccess(Object response);
 
   }
 
   /**
-   * 下载文件时响应的操作接口
+   * Operation interface that responds when downloading files
    */
   public interface DownLoadFileRespCallback {
     /**
-     * 失败原因
+     * Reason for failure
      *
-     * @param errorType -1：网络断开  ０:超时　　1：网络异常,http的code码非200　　２：根据响应Bean数据解析异常  3：请求设置的参数异常
-     * @param errorCode 　网络请求错误的code码
-     * @param errorMsg  具体的异常信息（通常没有）
+     * @param errorType -1: Network disconnected 0: Timeout 1: Network abnormality, http code is not 200 　　 2: Parsing abnormality based on the response bean data 3: Parameter abnormality requested
+     * @param errorCode 　Network request error code
+     * @param errorMsg specific exception information (usually not available)
      */
     void onError(int errorType, int errorCode, String errorMsg);
 
     /**
-     * 请求成功
+     * Successful request
      *
-     * @param file 下载成功后的文件
+     * @param file The file after successful download
      */
-    void onSucc(File file);
+    void onSuccess(File file);
 
     /**
-     * 请求成功
+     * Successful request
      *
-     * @param progress 当前下载的进度
+     * @param progress The current download progress
      */
     void onDownloadProgress(float progress);
 
   }
 
-  /*=================================*/
-
-  /**
-   * 显示加载中对
-   */
   public void showNormalLoading() {
     Log.i("TAG", "showNormalLoading");
     if (mLoadingDialog != null) {
       mLoadingDialog.dismiss();
       mLoadingDialog = null;
     }
-    /*显示与关掉不到1秒,则延迟1秒关闭*/
+    /*Display and turn off less than 1 second, then delay 1 second to turn off*/
     mLoadingDialog = ProgressDialog.show(mContext, null, "Loading...");
     mLoadingDialog.setCancelable(false);
     mLoadingDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
@@ -455,11 +422,11 @@ public class OkHttpManager {
         return false;
       }
     });
-    //控制显示时常
+    //Control display often
     new Handler().postDelayed(new Runnable() {
       @Override
       public void run() {
-//                if (System.currentTimeMillis() - startTime > 1000 * 1) {//本次请求大于一秒，需要弹出请求框
+//                if (System.currentTimeMillis() - startTime > 1000 * 1) {//This request is greater than one second, a request box needs to pop up
         if (mLoadingDialog != null) {
           mLoadingDialog.show();
         }
@@ -471,7 +438,7 @@ public class OkHttpManager {
 
   /**
    * check net state
-   * 检查网络是否联网以及网络状态
+   * Check if the network is connected and the network status
    *
    * @param context
    * @return
@@ -483,7 +450,7 @@ public class OkHttpManager {
       NetworkInfo mobNetInfo = connectMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
       NetworkInfo wifiNetInfo = connectMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
       if (mobNetInfo == null && wifiNetInfo != null) {
-        //没连接移动也没连接wifi
+        //Not connected to mobile or wifi
         if (!wifiNetInfo.isConnected()) {
           isNet = false;
         }
@@ -492,7 +459,7 @@ public class OkHttpManager {
           isNet = false;
         }
       } else if (!mobNetInfo.isConnected() && !wifiNetInfo.isConnected()) {
-        //没连接移动也没连接wifi
+        //Not connected to mobile or wifi
         isNet = false;
       }
     }

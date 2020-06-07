@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.assessment_2.R;
-import com.example.assessment_2.adapter.CAdapterChannelPager;
+import com.example.assessment_2.adapter.AdapterChannelPager;
 import com.example.assessment_2.constant.AppConstant;
 import com.example.assessment_2.fragments.HomeChannelFragment;
 import com.example.assessment_2.util.GlideImageLoaderHomeBanner;
@@ -30,10 +30,10 @@ public class HomeFragment extends Fragment {
     private List<Integer> bannerPicList = new ArrayList();
     private List<String> tabList = new ArrayList<>();
     private ViewPager viewPager;
-    private CAdapterChannelPager cAdapterChannelPager;
+    private AdapterChannelPager adapterChannelPager;
 
     /**
-     * 初始化顶部列表
+     * init tablist
      */
     {
         tabList.add(AppConstant.BRAND_HONDA);
@@ -45,7 +45,7 @@ public class HomeFragment extends Fragment {
     private Banner banner;
 
     /**
-     * Fragment容器
+     * Fragment
      */
     private List<Fragment> fragmentList = new ArrayList<>();
 
@@ -84,8 +84,8 @@ public class HomeFragment extends Fragment {
     private void initViewPager() {
         FragmentManager childFragMan = getChildFragmentManager();
         childFragMan.beginTransaction();
-        cAdapterChannelPager = new CAdapterChannelPager(childFragMan, fragmentList, tabList);
-        viewPager.setAdapter(cAdapterChannelPager);
+        adapterChannelPager = new AdapterChannelPager(childFragMan, fragmentList, tabList);
+        viewPager.setAdapter(adapterChannelPager);
         tabLayout.setupWithViewPager(viewPager);
     }
 }

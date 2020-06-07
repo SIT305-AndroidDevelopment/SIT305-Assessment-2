@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.assessment_2.R;
 import com.example.assessment_2.activity.BrandDetailActivity;
+import com.example.assessment_2.activity.SearchActivity;
 import com.example.assessment_2.adapter.BrandListAdapter;
 import com.example.assessment_2.base.IRecyclerViewItemClickListener;
 import com.example.assessment_2.model.MotorcycleBrandDto;
@@ -30,11 +32,14 @@ public class BrandFragment extends Fragment {
   private RecyclerView recyclerView;
   private BrandListAdapter adapter;
   private List<MotorcycleBrandDto> list = new ArrayList<>();
+  private LinearLayout ll_ToSearch;
 
   public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-    //返回当前页面容器layout
+    //return layout of this page
     View view = inflater.inflate(R.layout.page_brand, null);
+    ll_ToSearch = view.findViewById(R.id.ll_ToSearch);
     initRecyclerView(view);
+    initSearchClickListener();
     getList();
     return view;
   }
@@ -53,15 +58,15 @@ public class BrandFragment extends Fragment {
           adapter.notifyDataSetChanged();
         }
       }
-    }).execute();
+    }).NetRequest();
   }
 
   private void initRecyclerView(View view) {
     recyclerView = view.findViewById(R.id.recyclerView);
     adapter = new BrandListAdapter(getContext(), R.layout.item_brand, list);
-    //获取layout结构设置 决定布局属性
+    //Obtain layout structure settings and determine layout properties
     recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-    //为recyclerview设置适配器
+    //set adapter for recyclerview
     recyclerView.setAdapter(adapter);
     adapter.setItemClickListener(new IRecyclerViewItemClickListener() {
       public void onItemClickListener(RecyclerView.ViewHolder holder) {
@@ -70,6 +75,13 @@ public class BrandFragment extends Fragment {
         intent.putExtra("BRAND", motorcycleBrandDto);
         startActivity(intent);
       }
+    });
+  }
+
+  private void initSearchClickListener() {
+    ll_ToSearch.setOnClickListener(view -> {
+      Intent intent = new Intent(getActivity(), SearchActivity.class);
+      getActivity().startActivity(intent);
     });
   }
 }

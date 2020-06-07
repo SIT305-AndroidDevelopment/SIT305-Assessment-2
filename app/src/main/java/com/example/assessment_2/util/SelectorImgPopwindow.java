@@ -15,8 +15,7 @@ import com.jph.takephoto.app.TakePhoto;
 
 
 /**
- * 从哪里获取图片： 拍照、从相册选择、取消
- * Created by WangLu on 2017/3/6.
+ * Where to get pictures: Take photos, select from album, cancel
  */
 
 public class SelectorImgPopwindow {
@@ -64,11 +63,11 @@ public class SelectorImgPopwindow {
   /**
    * @param activity
    * @param takePhoto
-   * @param isCrop          是否裁剪
-   * @param isCompress      是否压缩
-   * @param compressMaxSize 压缩最大大小 kb
-   * @param width           裁剪比例
-   * @param height          裁剪比例
+   * @param isCrop is cropped
+   * @param isCompress is compressed
+   * @param compressMaxSize Compression maximum size kb
+   * @param width crop ratio
+   * @param height crop ratio
    */
   public void showPop(final Activity activity, TakePhoto takePhoto, boolean isCrop,
                       boolean isCompress, int compressMaxSize, int width, int height) {
@@ -82,13 +81,13 @@ public class SelectorImgPopwindow {
     LayoutInflater layoutInflater = LayoutInflater.from(activity);
     View popview = layoutInflater.inflate(R.layout.pop_picture_select, null);
 
-    //本地相册
+    //Local Album
     RelativeLayout btnBendi = (RelativeLayout) popview.findViewById(R.id.btn_bendi);
     btnBendi.setOnClickListener(clickListener);
-    //取消
+    //Cancel
     RelativeLayout btnCancel = (RelativeLayout) popview.findViewById(R.id.btn_cancel);
     btnCancel.setOnClickListener(clickListener);
-    //拍照
+    //Take Photo
     RelativeLayout btnCapture = (RelativeLayout) popview.findViewById(R.id.btn_paizhao);
     btnCapture.setOnClickListener(clickListener);
 
@@ -99,10 +98,8 @@ public class SelectorImgPopwindow {
     popwindow.setTouchable(true);
     popwindow.setOutsideTouchable(true);
     popwindow.setFocusable(true);
-    //虚拟按钮遮挡pop 所以要添加这条
     popwindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     if (!popwindow.isShowing()) {
-      //虚拟按钮遮挡pop 使用activity.getWindow().getDecorView()
       popwindow.showAtLocation(activity.getWindow().getDecorView(), Gravity.BOTTOM, 0, 0);
     }
   }
