@@ -189,6 +189,10 @@ public class UserFragment extends Fragment {
   }
 
   private void uploadContent(String text) {
+    if (!isLogin()) {
+      Toast.makeText(getActivity(), "Please Log in first", Toast.LENGTH_SHORT).show();
+      return;
+    }
     TextRequest request = new TextRequest();
     request.text = text;
     new OkHttpManager(getContext(), HttpUtil.TEXT, request, BaseResponse.class, false, new OkHttpManager.ResponseCallback() {
@@ -252,6 +256,10 @@ public class UserFragment extends Fragment {
    * 上传文件
    */
   private void uploadFile(String path) {
+    if (!isLogin()) {
+      Toast.makeText(getActivity(), "Please Log in first", Toast.LENGTH_SHORT).show();
+      return;
+    }
     new OkHttpManager("file", System.currentTimeMillis() + ".jpg", getContext(), HttpUtil.UPLOAD_FILE,
         new File(path), null, UploadFileResponse.class, true, new OkHttpManager.ResponseCallback() {
       public void onError(int errorType, int errorCode, String errorMsg) {
@@ -260,7 +268,7 @@ public class UserFragment extends Fragment {
 
       public void onSuccess(Object response) {
         if (response != null && response instanceof UploadFileResponse) {
-          Toast.makeText(getActivity(), "图片上传成功", Toast.LENGTH_SHORT).show();
+          Toast.makeText(getActivity(), "Upload Successfully", Toast.LENGTH_SHORT).show();
         }
       }
     }).executeFile();

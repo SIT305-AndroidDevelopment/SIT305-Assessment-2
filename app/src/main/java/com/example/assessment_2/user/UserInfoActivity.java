@@ -40,7 +40,7 @@ public class UserInfoActivity extends BaseActivity implements EasyPermissions.Pe
   }
 
   public void initView(String titleName) {
-    super.initView("基本资料");
+    super.initView("Basic Information");
     headerIv = this.findViewById(R.id.user_header_iv);
     if (headerPath == null || headerPath.isEmpty()) {
       headerIv.setImageResource(R.mipmap.ic_launcher);

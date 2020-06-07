@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/ic_beijing6">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guide_line"
@@ -15,16 +16,20 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/user_constraint"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@mipmap/ic_mine_bg"
+
         app:layout_constraintBottom_toTopOf="@+id/guide_line"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <com.example.assessment_2.view.CircleImageView
             android:id="@+id/user_header_iv"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="45dp"
+            android:layout_height="46dp"
             android:layout_marginTop="40dp"
             android:src="@drawable/ic_touxiang"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -40,7 +45,7 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:text="Log in/Sign in"
-            android:textColor="#0048FF"
+            android:textColor="@color/white"
             android:textSize="16dp"
             android:textStyle="italic"
             app:layout_constraintBottom_toTopOf="@+id/constraint"
@@ -55,17 +60,16 @@
             app:layout_constraintBottom_toTopOf="@+id/constraint"
             app:layout_constraintTop_toBottomOf="@+id/user_header_iv"
             app:layout_constraintVertical_bias="0.0"
-            tools:layout_editor_absoluteX="0dp">
+            tools:layout_editor_absoluteX="38dp">
 
             <TextView
                 android:id="@+id/user_name_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="asdf"
-                android:textColor="#000000"
+                android:text="User"
+                android:textColor="@color/white"
                 android:textSize="20dp"
                 app:layout_constraintBottom_toTopOf="@+id/edit_user_tv"
-                app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -73,8 +77,8 @@
 
             <TextView
                 android:id="@+id/edit_user_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="66dp"
+                android:layout_height="33dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/edit_user_btn_bg_shape"
                 android:paddingLeft="20dp"
@@ -83,8 +87,9 @@
                 android:paddingBottom="5dp"
                 android:text="Edit"
                 android:textColor="#fff"
-                android:textSize="14dp"
+                android:textSize="12dp"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/user_name_tv" />
@@ -195,55 +200,58 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/user_constraint"
+
         app:layout_constraintBottom_toTopOf="@+id/logout_btn"
-        >
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/user_constraint">
 
         <ImageView
             android:id="@+id/iv_userBike"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="39dp"
+            android:layout_height="35dp"
             android:layout_gravity="center"
-            android:src="@color/colorPrimary"
-            android:layout_marginTop="10dp"></ImageView>
+            android:layout_marginTop="10dp"
+            android:src="@color/colorPrimary"></ImageView>
 
         <Button
             android:id="@+id/btn_upload"
-            android:layout_width="wrap_content"
+            android:layout_width="411dp"
             android:layout_height="wrap_content"
-            android:text="Upload"
-            android:layout_marginTop="10dp"
             android:layout_gravity="center"
-            ></Button>
+            android:layout_marginTop="10dp"
+            android:text="Upload a photo"></Button>
 
         <EditText
             android:id="@+id/edit_content"
-            android:layout_width="381dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp" />
+            android:layout_width="411dp"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:textColor="@color/white"/>
 
         <Button
             android:id="@+id/text_upload"
-            android:layout_width="wrap_content"
+            android:layout_width="401dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Post"></Button>
+            android:text="Post A Comment"></Button>
     </LinearLayout>
 
     <Button
         android:id="@+id/logout_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Exit"
-        android:textSize="16dp"
-        android:textColor="#fff"
+        android:layout_width="165dp"
+        android:layout_height="31dp"
         android:layout_margin="10dp"
-        android:background="#005EFF"
+        android:background="@color/bar_grey"
+        android:text="Exit"
+        android:textColor="#fff"
+        android:textSize="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

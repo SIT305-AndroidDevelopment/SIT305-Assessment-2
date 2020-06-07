@@ -154,7 +154,7 @@ public class OkHttpManager {
   public void execute() {
     if (!this.check(mContext)) {  //判断网络
       if (mResponseCallback != null) {//接口异常
-        mResponseCallback.onError(-1, 0, "网络断开");
+        mResponseCallback.onError(-1, 0, "Connection Broken");
       }
       return;
     }
@@ -165,27 +165,27 @@ public class OkHttpManager {
     try {
       if (postJson == null || TextUtils.isEmpty(postJson)) {//get请求
         call = OkHttpUtils
-            .get()
-            .url(url)
-            .addHeader("Content_Type", "application/x-www-form-urlencoded;charset=utf-8")
-            .build()
-            .connTimeOut(connTimeOut);
+                .get()
+                .url(url)
+                .addHeader("Content_Type", "application/x-www-form-urlencoded;charset=utf-8")
+                .build()
+                .connTimeOut(connTimeOut);
       } else {
         /* 将JSON数据转换为Map<String, String> */
         GsonBuilder gb = new GsonBuilder();
         Gson g = gb.create();
         Map<String, String> map = g.fromJson(postJson, new TypeToken<Map<String, String>>() {
         }
-            .getType());
+                .getType());
         /* 设置okhttp */
 
         call = OkHttpUtils
-            .post()
-            .url(url)
-            .params(map)
-            .addHeader("Content_Type", "application/x-www-form-urlencoded; charset=utf-8")
-            .build()
-            .connTimeOut(connTimeOut);
+                .post()
+                .url(url)
+                .params(map)
+                .addHeader("Content_Type", "application/x-www-form-urlencoded; charset=utf-8")
+                .build()
+                .connTimeOut(connTimeOut);
       }
     } catch (Exception e) {
       if (mLoadingDialog != null) {
@@ -194,7 +194,7 @@ public class OkHttpManager {
       }
       if (mResponseCallback != null) {
         Log.e("TAG", "==okHttp error " + e.toString());
-        mResponseCallback.onError(3, 0, "请求设置的参数异常");//数据解析异常
+        mResponseCallback.onError(3, 0, "Unusual parameter request");//数据解析异常
       }
       return;
     }
@@ -212,16 +212,16 @@ public class OkHttpManager {
         }
         if (e.toString().contains("SocketTimeoutException")) {//网络超时
           if (mResponseCallback != null) {//接口异常
-            mResponseCallback.onError(0, id, "连接超时,请稍后再试");
+            mResponseCallback.onError(0, id, "Connection timed out, please try again later");
           }
         } else if (e.toString().contains("UnknownHostException")) {//网络断开
 //                    Toast.showToast("网络断开", JJBToast.WARNING);
           if (mResponseCallback != null) {//接口异常
-            mResponseCallback.onError(-1, id, "网络断开,请检查网络连接");
+            mResponseCallback.onError(-1, id, "Connection broken, please check internet");
           }
         } else {
           if (mResponseCallback != null) {//接口异常
-            mResponseCallback.onError(1, id, "服务器没有响应,请联系管理员");
+            mResponseCallback.onError(1, id, "No response of server");
           }
         }
 
@@ -243,19 +243,23 @@ public class OkHttpManager {
           e.printStackTrace();
           if (mResponseCallback != null) {
             Log.e("TAG", "==okHttp error " + e.toString());
-            mResponseCallback.onError(2, 0, "数据解析异常");//数据解析异常
+            mResponseCallback.onError(2, 0, "Data parsing exception");//数据解析异常
           }
         }
         /*判断code为非200的各种状态的toast*/
         if (object instanceof BaseResponse) {
           BaseResponse baseResponse = (BaseResponse) object;
           if (baseResponse.status != 0) {
-            mResponseCallback.onError(-1, 0, baseResponse.message);
+            mResponseCallback.onError(-1, 0, baseResponse.msg);
+          } else {
+            if (mResponseCallback != null && object != null) {
+              mResponseCallback.onSuccess(object);
+            }
           }
+        } else {
+          mResponseCallback.onError(2, 0, "Data parsing exception");
         }
-        if (mResponseCallback != null && object != null) {
-          mResponseCallback.onSuccess(object);
-        }
+
       }
     });
   }
@@ -267,13 +271,13 @@ public class OkHttpManager {
     if (!this.check(mContext)) {  //判断网络
 //            JJBToast.showToast("网络断开", JJBToast.WARNING);
       if (mResponseCallback != null) {//接口异常
-        mResponseCallback.onError(-1, 0, "网络断开");
+        mResponseCallback.onError(-1, 0, "Internet connection broken");
       }
       return;
     }
     if (this.file == null) {
       if (mResponseCallback != null) {//接口异常
-        mResponseCallback.onError(-1, 0, "图片上传失败");
+        mResponseCallback.onError(-1, 0, "Upload failed");
       }
       return;
     }
@@ -286,14 +290,14 @@ public class OkHttpManager {
       Gson g = gb.create();
       Map<String, String> map = g.fromJson(postJson, new TypeToken<Map<String, String>>() {
       }
-          .getType());
+              .getType());
       call = OkHttpUtils.post()//
-          .params(map)
-          .addFile(profileImage, fileName, file)
-          .url(url)
+              .params(map)
+              .addFile(profileImage, fileName, file)
+              .url(url)
 //                    .params(params)//
-          .addHeader("Content_Type", "application/x-www-form-urlencoded; charset=utf-8")
-          .build();
+              .addHeader("Content_Type", "application/x-www-form-urlencoded; charset=utf-8")
+              .build();
     } catch (Exception e) {
       if (mLoadingDialog != null) {
         mLoadingDialog.dismiss();
@@ -301,7 +305,7 @@ public class OkHttpManager {
       }
       if (mResponseCallback != null) {
         Log.e("TAG", "==okHttp error " + e.toString());
-        mResponseCallback.onError(3, 0, "请求设置的参数异常");//数据解析异常
+        mResponseCallback.onError(3, 0, "Unusual parameter request");//数据解析异常
       }
       return;
     }
@@ -318,16 +322,16 @@ public class OkHttpManager {
         }
         if (e.toString().contains("SocketTimeoutException")) {//网络超时
           if (mResponseCallback != null) {//接口异常
-            mResponseCallback.onError(0, id, "连接超时,请稍后再试");
+            mResponseCallback.onError(0, id, "Connection timed out, please try again later");
           }
         } else if (e.toString().contains("UnknownHostException")) {//网络断开
 //                    Toast.showToast("网络断开", JJBToast.WARNING);
           if (mResponseCallback != null) {//接口异常
-            mResponseCallback.onError(-1, id, "网络断开,请检查网络连接");
+            mResponseCallback.onError(-1, id, "The network is disconnected, please check the network connection");
           }
         } else {
           if (mResponseCallback != null) {//接口异常
-            mResponseCallback.onError(1, id, "连接服务器失败,请联系管理员");
+            mResponseCallback.onError(1, id, "Failed to connect to the server, please contact the administrator");
           }
         }
 
@@ -349,7 +353,7 @@ public class OkHttpManager {
           e.printStackTrace();
           if (mResponseCallback != null) {
             Log.e("TAG", "==okHttp error " + e.toString());
-            mResponseCallback.onError(2, 0, "数据解析异常");//数据解析异常
+            mResponseCallback.onError(2, 0, "Data parsing exception");//数据解析异常
           }
         }
         if (mResponseCallback != null && object != null) {
@@ -437,7 +441,7 @@ public class OkHttpManager {
       mLoadingDialog = null;
     }
     /*显示与关掉不到1秒,则延迟1秒关闭*/
-    mLoadingDialog = ProgressDialog.show(mContext, null, "正在加载...");
+    mLoadingDialog = ProgressDialog.show(mContext, null, "Loading...");
     mLoadingDialog.setCancelable(false);
     mLoadingDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
       @Override
@@ -474,7 +478,7 @@ public class OkHttpManager {
    */
   private Boolean check(Context context) {
     boolean isNet = true;
-    ConnectivityManager connectMgr = (ConnectivityManager) context.getSystemService(context.CONNECTIVITY_SERVICE);
+    ConnectivityManager connectMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
     if (connectMgr != null) {
       NetworkInfo mobNetInfo = connectMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
       NetworkInfo wifiNetInfo = connectMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);

@@ -103,7 +103,7 @@ public class BikeDetailActivity extends BaseActivity {
 
           public void onSuccess(Object response) {
             isCollect = !isCollect;
-            Toast.makeText(BikeDetailActivity.this, isCollect ? "收藏成功" : "取消收藏成功", Toast.LENGTH_SHORT).show();
+            Toast.makeText(BikeDetailActivity.this, isCollect ? "Collected successfully" : "cancel to collect", Toast.LENGTH_SHORT).show();
             collectBtn.setImageResource(isCollect ? R.mipmap.ic_collect : R.mipmap.ic_un_collect);
           }
         }).execute();
