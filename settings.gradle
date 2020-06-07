@@ -1,4 +1,0 @@
-include ':multipleimageselect'
-include ':PhotoLib'
-rootProject.name='Assessment-2'
-include ':app'
