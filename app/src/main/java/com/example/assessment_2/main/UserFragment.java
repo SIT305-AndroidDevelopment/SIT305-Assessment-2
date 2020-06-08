@@ -82,7 +82,6 @@ public class UserFragment extends Fragment {
           .into(iv_userBike);
     }
 
-
     userHeaderIv = view.findViewById(R.id.user_header_iv);
     userNameTv = view.findViewById(R.id.user_name_tv);
     editUserInfoBtn = view.findViewById(R.id.edit_user_tv);
@@ -169,10 +168,10 @@ public class UserFragment extends Fragment {
       if (userInfo.avatar != null) {
         Glide.with(getActivity()).load(userInfo.avatar).into(userHeaderIv);
       } else {
-        userHeaderIv.setImageResource(R.drawable.ic_touxiang);
+        userHeaderIv.setImageResource(R.drawable.ic_avatar);
       }
     } else {
-      userHeaderIv.setImageResource(R.drawable.ic_touxiang);
+      userHeaderIv.setImageResource(R.drawable.ic_avatar);
     }
   }
 
@@ -189,6 +188,10 @@ public class UserFragment extends Fragment {
   }
 
   private void uploadContent(String text) {
+    if (!isLogin()) {
+      Toast.makeText(getActivity(), "Please Log in first", Toast.LENGTH_SHORT).show();
+      return;
+    }
     TextRequest request = new TextRequest();
     request.text = text;
     new OkHttpManager(getContext(), HttpUtil.TEXT, request, BaseResponse.class, false, new OkHttpManager.ResponseCallback() {
@@ -199,7 +202,7 @@ public class UserFragment extends Fragment {
       public void onSuccess(Object response) {
         Toast.makeText(getActivity(), "Upload successful", Toast.LENGTH_SHORT).show();
       }
-    }).execute();
+    }).NetRequest();
   }
 
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -216,16 +219,13 @@ public class UserFragment extends Fragment {
   }
 
   /**
-   * 专为Android4.4设计的从Uri获取文件绝对路径，以前的方法已不好使
+   * Obtain absolute file path from Uri designed for Android4.4
    */
   @RequiresApi(api = Build.VERSION_CODES.KITKAT)
   public static String getPath(final Context context, final Uri uri) {
 
     final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
-
-      //一些三方的文件浏览器会进入到这个方法中，例如ES
-      //QQ文件管理器不在此列
 
       if (isExternalStorageDocument(uri)) {
         final String docId = DocumentsContract.getDocumentId(uri);
@@ -249,9 +249,13 @@ public class UserFragment extends Fragment {
   }
 
   /**
-   * 上传文件
+   * Upload
    */
   private void uploadFile(String path) {
+    if (!isLogin()) {
+      Toast.makeText(getActivity(), "Please Log in first", Toast.LENGTH_SHORT).show();
+      return;
+    }
     new OkHttpManager("file", System.currentTimeMillis() + ".jpg", getContext(), HttpUtil.UPLOAD_FILE,
         new File(path), null, UploadFileResponse.class, true, new OkHttpManager.ResponseCallback() {
       public void onError(int errorType, int errorCode, String errorMsg) {
@@ -260,26 +264,26 @@ public class UserFragment extends Fragment {
 
       public void onSuccess(Object response) {
         if (response != null && response instanceof UploadFileResponse) {
-          Toast.makeText(getActivity(), "图片上传成功", Toast.LENGTH_SHORT).show();
+          Toast.makeText(getActivity(), "Upload Successfully", Toast.LENGTH_SHORT).show();
         }
       }
-    }).executeFile();
+    }).NetUploadFile();
   }
 
   /**
-   * 授权管理,并打开相册或开启相机
+   * Authorized management, and open the album or turn on the camera
    */
   public static void initPermissions(Activity ctx, String permissionName) {
     if (ContextCompat.checkSelfPermission(ctx, permissionName) != PackageManager.PERMISSION_GRANTED) {
-      Log.i(TAG, "需要授权 ");
+      Log.i(TAG, "Authorization required ");
       if (ActivityCompat.shouldShowRequestPermissionRationale(ctx, permissionName)) {
-        Log.i(TAG, "拒绝过了");
+        Log.i(TAG, "Rejected");
       } else {
-        Log.i(TAG, "进行授权");
+        Log.i(TAG, "Authorize");
         ActivityCompat.requestPermissions(ctx, new String[]{permissionName}, 1000);
       }
     } else {
-      Log.i(TAG, "不需要授权 ");
+      Log.i(TAG, "No authorization required ");
     }
   }
 }

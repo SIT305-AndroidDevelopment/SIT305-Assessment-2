@@ -20,7 +20,7 @@ public class LoginActivity extends BaseActivity {
   Button btn_Login;
 
   public void initView(String titleName) {
-    super.initView("用户登录");
+    super.initView("Log In");
     btn_Login = findViewById(R.id.btn_Login);
     et_UserName = findViewById(R.id.user_name_et);
     et_PassWord = findViewById(R.id.password_et);
@@ -42,11 +42,11 @@ public class LoginActivity extends BaseActivity {
       String userName_input = et_UserName.getText().toString();
       String passWord_input = et_PassWord.getText().toString();
       if (userName_input.isEmpty()) {
-        Toast.makeText(LoginActivity.this, "请输入用户名", Toast.LENGTH_SHORT).show();
+        Toast.makeText(LoginActivity.this, "Please input username", Toast.LENGTH_SHORT).show();
         return;
       }
       if (passWord_input.isEmpty()) {
-        Toast.makeText(LoginActivity.this, "请输入密码", Toast.LENGTH_SHORT).show();
+        Toast.makeText(LoginActivity.this, "Please input password", Toast.LENGTH_SHORT).show();
         return;
       }
       tryToLogin(userName_input, passWord_input);
@@ -54,10 +54,7 @@ public class LoginActivity extends BaseActivity {
   }
 
   /**
-   * 进行登录请求的数据库查询
-   *
-   * @param username 用户名
-   * @param password 密码
+   * Perform database query for login request
    */
   private void tryToLogin(String username, String password) {
     LoginRequest request = new LoginRequest();
@@ -65,17 +62,19 @@ public class LoginActivity extends BaseActivity {
     request.password = password;
     new OkHttpManager(LoginActivity.this, HttpUtil.LOGIN, request, LoginResponse.class, true, new OkHttpManager.ResponseCallback() {
       public void onError(int errorType, int errorCode, String errorMsg) {
-        Toast.makeText(LoginActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(LoginActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(LoginActivity.this, "Wrong UserName or Password", Toast.LENGTH_SHORT).show();
       }
 
       public void onSuccess(Object response) {
         if (response != null && response instanceof LoginResponse) {
           UserInfoManager.getInstance().saveUserInfo(((LoginResponse) response).data);
+          Toast.makeText(LoginActivity.this, "log in Successfully", Toast.LENGTH_SHORT).show();
           finish();
         } else {
-          Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
+          Toast.makeText(LoginActivity.this, "log in failed", Toast.LENGTH_SHORT).show();
         }
       }
-    }).execute();
+    }).NetRequest();
   }
 }

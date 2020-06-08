@@ -30,7 +30,6 @@ public class WebViewActivity extends Activity {
         initWebView();
     }
 
-
     private void initWebView() {
 //        webView.loadUrl("https://kawasaki.com.au/");
 //        webView.loadUrl("https://www.baidu.com/");
@@ -38,13 +37,12 @@ public class WebViewActivity extends Activity {
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
-        settings.setJavaScriptCanOpenWindowsAutomatically(true); //支持通过JS打开新窗口
-        settings.setUseWideViewPort(true); //将图片调整到适合webview的大小
-        settings.setLoadWithOverviewMode(true); // 缩放至屏幕的大小
+        settings.setJavaScriptCanOpenWindowsAutomatically(true); //support us JS open a new window
+        settings.setUseWideViewPort(true); //fit the picture to size of webview
+        settings.setLoadWithOverviewMode(true); //zoom to screen size
         settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         initWebViewClient();
     }
-
 
     private void initWebViewClient() {
         mWebviewclient = new WebViewClient() {

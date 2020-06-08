@@ -16,10 +16,10 @@ public class AssessmentApplication extends Application {
     super.onCreate();
     mContext = getApplicationContext();
 
-    //在使用SDK各组件之前初始化context信息，传入ApplicationContext
+    //Initialize the context information before using the SDK components and pass in the ApplicationContext
     SDKInitializer.initialize(this);
-    //自4.3.0起，百度地图SDK所有接口均支持百度坐标和国测局坐标，用此方法设置您使用的坐标类型.
-    //包括BD09LL和GCJ02两种坐标，默认是BD09LL坐标。
+    //Since 4.3.0, all interfaces of Baidu Map SDK support Baidu coordinates and National Bureau of Surveying coordinates. Use this method to set the coordinate type you use.
+    //Including BD09LL and GCJ02 coordinates, the default is BD09LL coordinates
     SDKInitializer.setCoordType(CoordType.BD09LL);
 //    InitializationConfig config = InitializationConfig.newBuilder(this)
 //        .connectionTimeout(30 * 1000)
@@ -38,7 +38,7 @@ public class AssessmentApplication extends Application {
   }
 
   /**
-   * 提供一个应用级别的全局上下文mContext
+   * Provide an application-level global context mContext
    */
   public static Context getContext() {
     return mContext;

@@ -4,5 +4,5 @@ import java.io.Serializable;
 
 public class BaseResponse implements Serializable {
   public int status;
-  public String message = "";
+  public String msg = "";
 }

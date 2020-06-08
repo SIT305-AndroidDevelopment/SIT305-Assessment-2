@@ -8,5 +8,5 @@ public class UserInfo {
   public String password;
   public String avatar;
   public String username;
-  public boolean rememberPwd; //是否记住密码
+  public boolean rememberPwd; //remember the password
 }

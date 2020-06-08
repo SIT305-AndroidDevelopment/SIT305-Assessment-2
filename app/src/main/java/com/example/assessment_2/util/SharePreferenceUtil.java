@@ -13,7 +13,7 @@ import java.io.StreamCorruptedException;
 import java.util.HashMap;
 
 /**
- * 全局SharedPreference工具类，可靠稳定
+ * Global SharedPreference tool class
  */
 public class SharePreferenceUtil {
     public static void setString(Context ctx, String key, String value) {
@@ -68,15 +68,15 @@ public class SharePreferenceUtil {
 
 
     public static String SceneList2String(HashMap<Integer, Boolean> hashmap) throws IOException {
-        // 实例化一个ByteArrayOutputStream对象，用来装载压缩后的字节文件。
+        //Instantiate a ByteArrayOutputStream object, used to load the compressed byte file.
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        // 然后将得到的字符数据装载到ObjectOutputStream
+        //Then load the obtained character data into ObjectOutputStream
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-        // writeObject 方法负责写入特定类的对象的状态，以便相应的 readObject 方法可以还原它
+        //The writeObject method is responsible for writing the state of an object of a particular class so that the corresponding readObject method can restore it
         objectOutputStream.writeObject(hashmap);
-        // 最后，用Base64.encode将字节文件转换成Base64编码保存在String中
+        //Finally, use Base64.encode to convert the byte file to Base64 encoding and save it in String
         String SceneListString = new String(Base64.encode(byteArrayOutputStream.toByteArray(), Base64.DEFAULT));
-        // 关闭objectOutputStream
+        //Close objectOutputStream
         objectOutputStream.close();
         return SceneListString;
     }
@@ -111,9 +111,9 @@ public class SharePreferenceUtil {
 
     public static HashMap<Integer, Boolean> getHashMap(Context context, String key) {
         SharedPreferences settings = context.getSharedPreferences("config", Context.MODE_PRIVATE);
-        String liststr = settings.getString(key, "");
+        String listStr = settings.getString(key, "");
         try {
-            return String2SceneList(liststr);
+            return String2SceneList(listStr);
         } catch (StreamCorruptedException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

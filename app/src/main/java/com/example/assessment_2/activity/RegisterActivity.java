@@ -60,7 +60,7 @@ public class RegisterActivity extends BaseActivity {
         Toast.makeText(RegisterActivity.this, "Register successfully", Toast.LENGTH_SHORT).show();
         finish();
       }
-    }).execute();
+    }).NetRequest();
   }
 
   protected int getLayout() {

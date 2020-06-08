@@ -13,40 +13,40 @@ import java.io.File;
 
 public class TakePhotoHelper {
   /**
-   * 是否裁剪
+   * Whether to crop
    */
   private boolean isCrop = false;
   /**
-   * 是否压缩
+   * Whether to compress
    */
   private boolean isCompress = false;
   /**
-   * 压缩大小不超过
-   * 单位：B
+   * Compression size does not exceed
+   * Unit: B
    */
   private int compressMaxSize = 100000;
 
   /**
-   * 裁剪比例 宽度
+   * Crop ratio Width
    */
   private int width = 1;
   /**
-   * 裁剪比例 高度
+   * Crop ratio height
    */
   private int height = 1;
   /**
-   * 是否保留原图
+   * Whether to keep the original picture
    */
   private boolean enableReserveRaw = true;
 
   /**
-   * TakePahoto管理工具
+   * TakePahoto management tool
    *
-   * @param isCrop          是否裁剪
-   * @param isCompress      是否压缩
-   * @param compressMaxSize 压缩最大大小
-   * @param width           裁剪比例 宽
-   * @param height          裁剪比例 高
+   * @param isCrop is cropped
+   * @param isCompress is compressed
+   * @param compressMaxSize Compression maximum size
+   * @param width crop ratio width
+   * @param height crop ratio high
    * @return
    */
   public static TakePhotoHelper getHelper(boolean isCrop, boolean isCompress, int compressMaxSize,
@@ -67,7 +67,7 @@ public class TakePhotoHelper {
   }
 
   /**
-   * 拍照
+   * Take a picture
    *
    * @param takePhoto
    */
@@ -95,7 +95,7 @@ public class TakePhotoHelper {
   }
 
   /**
-   * 配置
+   * Configuration
    *
    * @param takePhoto
    */
@@ -110,13 +110,13 @@ public class TakePhotoHelper {
   }
 
   /**
-   * 压缩相关配置
+   * Compression related configuration
    *
    * @param takePhoto
    */
   private void configCompress(TakePhoto takePhoto) {
     if (!isCompress) {
-      /* 是否压缩 */
+      /* Whether to compress */
       takePhoto.onEnableCompress(null, false);
       return;
     }
@@ -126,18 +126,18 @@ public class TakePhotoHelper {
     config = new CompressConfig.Builder()
         .setMaxSize(compressMaxSize)
         .setMaxPixel(compressWidth >= compressHeight ? compressWidth : compressHeight)
-        .enableReserveRaw(enableReserveRaw)//是否保留原图
+        .enableReserveRaw(enableReserveRaw)//Whether to keep the original picture
         .create();
     takePhoto.onEnableCompress(config, false);
   }
 
   /**
-   * 裁剪相关配置
+   * Clipping related configuration
    *
    * @return
    */
   private CropOptions getCropOptions() {
-    /* 是否使用第三方裁剪工具 */
+    /* Whether to use a third-party cropping tool */
     boolean withWonCrop = true;
 
     CropOptions.Builder builder = new CropOptions.Builder();

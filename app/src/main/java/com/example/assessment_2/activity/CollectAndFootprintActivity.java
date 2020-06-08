@@ -22,7 +22,7 @@ import java.util.List;
 
 public class CollectAndFootprintActivity extends BaseActivity {
 
-  //用于标识是从哪里跳转过来的，0-收藏  1-足迹
+  //to sign where it jump from, 0-collection  1-footprint
   private int type;
   private String titleStr;
   private BikeListAdapter bikeListAdapter;
@@ -77,7 +77,7 @@ public class CollectAndFootprintActivity extends BaseActivity {
           }
         }
       }
-    }).execute();
+    }).NetRequest();
   }
 
   protected void onResume() {

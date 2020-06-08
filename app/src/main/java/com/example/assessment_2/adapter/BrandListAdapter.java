@@ -44,13 +44,5 @@ public class BrandListAdapter extends BaseQuickAdapter<MotorcycleBrandDto, BaseV
         }
       });
     }
-//
-//    llBrand.setOnClickListener(view -> {
-//      Intent intent = new Intent(activity, BrandDetailActivity.class);
-//      Bundle bundle = new Bundle();
-//      bundle.putSerializable("brandItem", item);
-//      intent.putExtras(bundle);
-//      activity.startActivity(intent);
-//    });
   }
 }
