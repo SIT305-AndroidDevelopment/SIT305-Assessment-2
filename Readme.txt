@@ -15,5 +15,5 @@ The home, brand and map pages include media, map components.
 
 <--------Github Repository Link---------->
 
-Xiaofeng Yin's ---->https://github.com/SIT305-AndroidDevelopment/SIT305-Assessment-2
+Xiaofeng Yin's ---->https://github.com/SIT305-AndroidDevelopment/SIT305-Assessment-2 (contribution: UserPage, database and server)
 Shuaijun Chen's--->https://github.com/SIT305-AndroidDevelopment/AndroidDev
