@@ -1,0 +1,8 @@
+version: '3'
+services:
+  manager:
+    restart: always
+    image: registry.cn-hangzhou.aliyuncs.com/guanweiming/motor-server:1.0
+    ports:
+      - "55:8889/tcp"
+      - "8889:8889/tcp"
